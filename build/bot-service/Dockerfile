@@ -10,10 +10,10 @@ COPY pkg ./pkg
 ENV CGO_ENABLED=0
 ENV GOFLAGS=-mod=vendor
 
-RUN go build -o /out/api-service ./cmd/api-service
+RUN go build -o /out/bot-service ./cmd/bot-service
 
 FROM debian:bookworm-slim
 
 WORKDIR /app
-COPY --from=build /out/api-service ./api-service
+COPY --from=build /out/bot-service ./bot-service
 

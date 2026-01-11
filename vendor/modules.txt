@@ -70,6 +70,10 @@ golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
 golang.org/x/text/width
+# gopkg.in/telebot.v4 v4.0.0-beta.5
+## explicit; go 1.16
+gopkg.in/telebot.v4
+gopkg.in/telebot.v4/middleware
 # gorm.io/driver/postgres v1.5.9
 ## explicit; go 1.19
 gorm.io/driver/postgres

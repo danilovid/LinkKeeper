@@ -30,6 +30,10 @@ func (s *LinkService) List(ctx context.Context, limit, offset int) ([]apiservice
 	return s.repo.List(ctx, limit, offset)
 }
 
+func (s *LinkService) Random(ctx context.Context, resource string) (apiservice.Link, error) {
+	return s.repo.Random(ctx, resource)
+}
+
 func (s *LinkService) Update(ctx context.Context, id string, input apiservice.LinkUpdateInput) (apiservice.Link, error) {
 	if err := validateUpdate(input); err != nil {
 		return apiservice.Link{}, err

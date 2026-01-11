@@ -49,6 +49,7 @@ func (s *Server) routes() {
 	api := s.router.PathPrefix("/api/v1").Subrouter()
 	api.HandleFunc("/links", s.Create()).Methods(http.MethodPost)
 	api.HandleFunc("/links", s.List()).Methods(http.MethodGet)
+	api.HandleFunc("/links/random", s.Random()).Methods(http.MethodGet)
 	api.HandleFunc("/links/{id}", s.Get()).Methods(http.MethodGet)
 	api.HandleFunc("/links/{id}", s.Update()).Methods(http.MethodPatch)
 	api.HandleFunc("/links/{id}", s.Delete()).Methods(http.MethodDelete)
