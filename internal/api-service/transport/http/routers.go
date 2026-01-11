@@ -91,6 +91,18 @@ func (s *Server) List() http.HandlerFunc {
 	}
 }
 
+func (s *Server) Random() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		resource := strings.TrimSpace(r.URL.Query().Get("resource"))
+		link, err := s.uc.Random(r.Context(), resource)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, toLinkResponse(link))
+	}
+}
+
 func (s *Server) Update() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]

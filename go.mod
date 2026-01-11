@@ -7,6 +7,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/justinas/alice v1.2.0
 	github.com/rs/zerolog v1.33.0
+	gopkg.in/telebot.v4 v4.0.0-beta.5
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.12
 )

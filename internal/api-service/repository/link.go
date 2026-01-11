@@ -65,6 +65,18 @@ func (r *LinkRepo) List(ctx context.Context, limit, offset int) ([]apiservice.Li
 	return out, nil
 }
 
+func (r *LinkRepo) Random(ctx context.Context, resource string) (apiservice.Link, error) {
+	var model LinkModel
+	q := r.db.WithContext(ctx).Model(&LinkModel{})
+	if resource != "" {
+		q = q.Where("resource = ?", resource)
+	}
+	if err := q.Order("random()").Limit(1).Take(&model).Error; err != nil {
+		return apiservice.Link{}, mapErr(err)
+	}
+	return toLink(model), nil
+}
+
 func (r *LinkRepo) Update(ctx context.Context, id string, input apiservice.LinkUpdateInput) (apiservice.Link, error) {
 	updates := map[string]any{}
 	if input.URL != nil {
