@@ -2,17 +2,10 @@ package apiservice
 
 import "time"
 
-type LinkKind string
-
-const (
-	LinkKindArticle LinkKind = "article"
-	LinkKindVideo   LinkKind = "video"
-)
-
 type Link struct {
 	ID        string
 	URL       string
-	Kind      LinkKind
+	Resource  string
 	Views     int64
 	ViewedAt  *time.Time
 	CreatedAt time.Time
@@ -20,11 +13,11 @@ type Link struct {
 }
 
 type LinkCreateInput struct {
-	URL  string
-	Kind LinkKind
+	URL      string
+	Resource string
 }
 
 type LinkUpdateInput struct {
-	URL  *string
-	Kind *LinkKind
+	URL      *string
+	Resource *string
 }

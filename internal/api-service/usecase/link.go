@@ -49,28 +49,15 @@ func validateCreate(input apiservice.LinkCreateInput) error {
 	if input.URL == "" {
 		return fmt.Errorf("%w: url is required", apiservice.ErrInvalidInput)
 	}
-	switch input.Kind {
-	case apiservice.LinkKindArticle, apiservice.LinkKindVideo:
-		return nil
-	default:
-		return fmt.Errorf("%w: kind must be article or video", apiservice.ErrInvalidInput)
-	}
+	return nil
 }
 
 func validateUpdate(input apiservice.LinkUpdateInput) error {
-	if input.URL == nil && input.Kind == nil {
+	if input.URL == nil && input.Resource == nil {
 		return fmt.Errorf("%w: no fields to update", apiservice.ErrInvalidInput)
 	}
 	if input.URL != nil && *input.URL == "" {
 		return fmt.Errorf("%w: url is required", apiservice.ErrInvalidInput)
-	}
-	if input.Kind != nil {
-		switch *input.Kind {
-		case apiservice.LinkKindArticle, apiservice.LinkKindVideo:
-			return nil
-		default:
-			return fmt.Errorf("%w: kind must be article or video", apiservice.ErrInvalidInput)
-		}
 	}
 	return nil
 }
