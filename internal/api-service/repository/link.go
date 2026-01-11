@@ -22,7 +22,7 @@ func NewLinkRepo(db *gorm.DB) *LinkRepo {
 type LinkModel struct {
 	ID        string     `gorm:"type:uuid;primaryKey"`
 	URL       string     `gorm:"not null"`
-	Kind      string     `gorm:"not null"`
+	Resource  string     `gorm:"not null;default:''"`
 	Views     int64      `gorm:"not null;default:0"`
 	ViewedAt  *time.Time `gorm:"default:null"`
 	CreatedAt time.Time  `gorm:"autoCreateTime"`
@@ -33,7 +33,7 @@ func (r *LinkRepo) Create(ctx context.Context, input apiservice.LinkCreateInput)
 	model := LinkModel{
 		ID:   uuid.NewString(),
 		URL:  input.URL,
-		Kind: string(input.Kind),
+		Resource: input.Resource,
 	}
 	if err := r.db.WithContext(ctx).Create(&model).Error; err != nil {
 		return apiservice.Link{}, err
@@ -70,8 +70,8 @@ func (r *LinkRepo) Update(ctx context.Context, id string, input apiservice.LinkU
 	if input.URL != nil {
 		updates["url"] = *input.URL
 	}
-	if input.Kind != nil {
-		updates["kind"] = string(*input.Kind)
+	if input.Resource != nil {
+		updates["resource"] = *input.Resource
 	}
 	if len(updates) > 0 {
 		res := r.db.WithContext(ctx).
@@ -128,7 +128,7 @@ func toLink(m LinkModel) apiservice.Link {
 	return apiservice.Link{
 		ID:        m.ID,
 		URL:       m.URL,
-		Kind:      apiservice.LinkKind(m.Kind),
+		Resource:  m.Resource,
 		Views:     m.Views,
 		ViewedAt:  m.ViewedAt,
 		CreatedAt: m.CreatedAt,

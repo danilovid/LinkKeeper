@@ -14,19 +14,19 @@ import (
 )
 
 type createLinkRequest struct {
-	URL  string `json:"url"`
-	Kind string `json:"kind"`
+	URL      string `json:"url"`
+	Resource string `json:"resource"`
 }
 
 type updateLinkRequest struct {
-	URL  *string `json:"url"`
-	Kind *string `json:"kind"`
+	URL      *string `json:"url"`
+	Resource *string `json:"resource"`
 }
 
 type linkResponse struct {
 	ID        string     `json:"id"`
 	URL       string     `json:"url"`
-	Kind      string     `json:"kind"`
+	Resource  string     `json:"resource,omitempty"`
 	Views     int64      `json:"views"`
 	ViewedAt  *time.Time `json:"viewed_at,omitempty"`
 	CreatedAt time.Time  `json:"created_at"`
@@ -40,16 +40,16 @@ func Health(w http.ResponseWriter, _ *http.Request) {
 func (s *Server) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req createLinkRequest
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, "bad json", http.StatusBadRequest)
-			return
-		}
-		req.URL = strings.TrimSpace(req.URL)
-		req.Kind = strings.TrimSpace(req.Kind)
-		input := apiservice.LinkCreateInput{
-			URL:  req.URL,
-			Kind: apiservice.LinkKind(req.Kind),
-		}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "bad json", http.StatusBadRequest)
+		return
+	}
+	req.URL = strings.TrimSpace(req.URL)
+	req.Resource = strings.TrimSpace(req.Resource)
+	input := apiservice.LinkCreateInput{
+		URL:      req.URL,
+		Resource: req.Resource,
+	}
 		link, err := s.uc.Create(r.Context(), input)
 		if err != nil {
 			writeError(w, err)
@@ -99,23 +99,18 @@ func (s *Server) Update() http.HandlerFunc {
 			http.Error(w, "bad json", http.StatusBadRequest)
 			return
 		}
-		if req.URL != nil {
-			trimmed := strings.TrimSpace(*req.URL)
-			req.URL = &trimmed
-		}
-		if req.Kind != nil {
-			trimmed := strings.TrimSpace(*req.Kind)
-			req.Kind = &trimmed
-		}
-		var kind *apiservice.LinkKind
-		if req.Kind != nil {
-			k := apiservice.LinkKind(*req.Kind)
-			kind = &k
-		}
-		input := apiservice.LinkUpdateInput{
-			URL:  req.URL,
-			Kind: kind,
-		}
+	if req.URL != nil {
+		trimmed := strings.TrimSpace(*req.URL)
+		req.URL = &trimmed
+	}
+	if req.Resource != nil {
+		trimmed := strings.TrimSpace(*req.Resource)
+		req.Resource = &trimmed
+	}
+	input := apiservice.LinkUpdateInput{
+		URL:      req.URL,
+		Resource: req.Resource,
+	}
 		link, err := s.uc.Update(r.Context(), id, input)
 		if err != nil {
 			writeError(w, err)
@@ -169,7 +164,7 @@ func toLinkResponse(link apiservice.Link) linkResponse {
 	return linkResponse{
 		ID:        link.ID,
 		URL:       link.URL,
-		Kind:      string(link.Kind),
+		Resource:  link.Resource,
 		Views:     link.Views,
 		ViewedAt:  link.ViewedAt,
 		CreatedAt: link.CreatedAt,
