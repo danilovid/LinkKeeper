@@ -9,6 +9,7 @@ import (
 
 	apiservice "github.com/danilovid/linkkeeper/internal/api-service"
 	"github.com/danilovid/linkkeeper/pkg/logger"
+	"github.com/rs/cors"
 )
 
 type Server struct {
@@ -34,14 +35,15 @@ func (s *Server) Handler() http.Handler {
 func (s *Server) routes() {
 	s.router.StrictSlash(true)
 
-	// corsOpts := cors.Options{
-	// 	AllowedOrigins: []string{"*"},
-	// 	AllowedMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
-	// 	AllowedHeaders: []string{"Origin", "Accept", "Content-Type", "X-Requested-With", "Authorization", "X-Auth-Key"},
-	// }
+	corsOpts := cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Origin", "Accept", "Content-Type", "X-Requested-With", "Authorization", "X-Auth-Key"},
+	}
 
 	s.handler = alice.New(
 		requestLogger,
+		cors.New(corsOpts).Handler,
 	).Then(s.router)
 
 	s.router.HandleFunc("/health", Health).Methods(http.MethodGet)
