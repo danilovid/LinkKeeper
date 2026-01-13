@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { apiClient } from '../api/client';
 import { Link } from '../types';
+import ViewStatsChart from '../components/ViewStatsChart';
 
 // Функция для определения размера экрана
 const getScreenDimensions = () => Dimensions.get('window');
@@ -323,6 +324,11 @@ export default function ModernScreen() {
         </ScrollView>
       )}
 
+      {/* View Statistics Chart */}
+      <View style={styles.chartWrapper}>
+        <ViewStatsChart days={365} />
+      </View>
+
       {/* Random Link Card */}
       {randomLink && (
         <View style={styles.randomCard}>
@@ -352,18 +358,21 @@ export default function ModernScreen() {
           </View>
           <View style={styles.randomCardActions}>
             <TouchableOpacity
-              style={styles.actionButton}
+              style={styles.checkboxButton}
               onPress={() => handleMarkViewed(randomLink.id)}
-              activeOpacity={0.8}
+              activeOpacity={0.7}
             >
-              <Text style={styles.actionButtonText}>Mark Viewed</Text>
+              <View style={[styles.checkbox, randomLink.views > 0 && styles.checkboxChecked]}>
+                {randomLink.views > 0 && <Text style={styles.checkboxCheckmark}>✓</Text>}
+              </View>
+              <Text style={styles.checkboxLabel}>Mark Viewed</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.actionButton, styles.deleteButton]}
+              style={styles.deleteIconButton}
               onPress={() => handleDelete(randomLink.id)}
-              activeOpacity={0.8}
+              activeOpacity={0.7}
             >
-              <Text style={styles.actionButtonText}>Delete</Text>
+              <Text style={styles.deleteIcon}>🗑️</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -420,18 +429,21 @@ export default function ModernScreen() {
               </View>
               <View style={styles.linkActions}>
                 <TouchableOpacity
-                  style={styles.linkAction}
+                  style={styles.checkboxButton}
                   onPress={() => handleMarkViewed(link.id)}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.linkActionText}>Mark Viewed</Text>
+                  <View style={[styles.checkbox, link.views > 0 && styles.checkboxChecked]}>
+                    {link.views > 0 && <Text style={styles.checkboxCheckmark}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Mark Viewed</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.linkAction, styles.linkActionDelete]}
+                  style={styles.deleteIconButton}
                   onPress={() => handleDelete(link.id)}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.linkActionText}>Delete</Text>
+                  <Text style={styles.deleteIcon}>🗑️</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -754,26 +766,58 @@ const styles = StyleSheet.create({
   randomCardActions: {
     flexDirection: 'row',
     gap: responsive.toolbarGap,
-  },
-  actionButton: {
-    flex: 1,
-    paddingVertical: responsive.buttonPaddingV,
-    borderRadius: INITIAL_IS_DESKTOP ? 6 : 10,
-    backgroundColor: '#238636',
     alignItems: 'center',
+  },
+  checkboxButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: INITIAL_IS_DESKTOP ? 8 : 10,
+    flex: 1,
+  },
+  checkbox: {
+    width: INITIAL_IS_DESKTOP ? 18 : 20,
+    height: INITIAL_IS_DESKTOP ? 18 : 20,
+    borderRadius: INITIAL_IS_DESKTOP ? 4 : 5,
+    borderWidth: 2,
+    borderColor: '#30363d',
+    backgroundColor: '#21262d',
     justifyContent: 'center',
-    minHeight: responsive.buttonHeight,
+    alignItems: 'center',
   },
-  deleteButton: {
-    backgroundColor: '#da3633', // GitHub red
+  checkboxChecked: {
+    backgroundColor: '#238636',
+    borderColor: '#238636',
   },
-  actionButtonText: {
+  checkboxCheckmark: {
     color: '#fff',
+    fontSize: INITIAL_IS_DESKTOP ? 12 : 14,
+    fontWeight: 'bold',
+  },
+  checkboxLabel: {
+    color: '#f0f6fc',
     fontSize: responsive.buttonTextSize,
-    fontWeight: '600',
+    fontWeight: '500',
+  },
+  deleteIconButton: {
+    width: INITIAL_IS_DESKTOP ? 36 : 40,
+    height: INITIAL_IS_DESKTOP ? 36 : 40,
+    borderRadius: INITIAL_IS_DESKTOP ? 6 : 8,
+    backgroundColor: '#21262d',
+    borderWidth: 1,
+    borderColor: '#da3633',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteIcon: {
+    fontSize: INITIAL_IS_DESKTOP ? 16 : 18,
   },
   list: {
     flex: 1,
+  },
+  chartWrapper: {
+    paddingHorizontal: INITIAL_IS_DESKTOP ? 12 : 16,
+    paddingTop: INITIAL_IS_DESKTOP ? 0 : 0,
+    ...(INITIAL_IS_DESKTOP && { maxWidth: 1200, alignSelf: 'center', width: '100%' }),
   },
   listContent: {
     padding: INITIAL_IS_DESKTOP ? 12 : 16,
@@ -868,25 +912,7 @@ const styles = StyleSheet.create({
   linkActions: {
     flexDirection: 'row',
     gap: responsive.toolbarGap,
-  },
-  linkAction: {
-    flex: 1,
-    paddingVertical: responsive.buttonPaddingV,
-    borderRadius: INITIAL_IS_DESKTOP ? 6 : 10,
-    backgroundColor: '#21262d',
-    borderWidth: 1,
-    borderColor: '#30363d',
     alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: responsive.buttonHeight,
   },
-  linkActionDelete: {
-    backgroundColor: '#21262d',
-    borderColor: '#da3633',
-  },
-  linkActionText: {
-    color: '#f0f6fc',
-    fontSize: responsive.buttonTextSize,
-    fontWeight: '600',
-  },
+  // Используем те же стили для checkbox и deleteIconButton
 });

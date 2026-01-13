@@ -1,0 +1,244 @@
+version: '3'
+
+vars:
+  API_ADDR: ":8080"
+  POSTGRES_DSN: "postgres://postgres:postgres@localhost:5432/linkkeeper?sslmode=disable"
+  API_BASE_URL: "http://localhost:8080"
+  TELEGRAM_TOKEN: ""
+
+tasks:
+  default:
+    desc: Показать доступные задачи
+    cmds:
+      - task --list
+
+  # ============================================
+  # Docker Compose задачи
+  # ============================================
+  
+  docker:up:
+    desc: Запустить все сервисы через Docker Compose
+    cmds:
+      - docker-compose up -d
+    preconditions:
+      - test: -f docker-compose.yml
+
+  docker:down:
+    desc: Остановить все сервисы Docker Compose
+    cmds:
+      - docker-compose down
+
+  docker:logs:
+    desc: Показать логи всех сервисов
+    cmds:
+      - docker-compose logs -f
+
+  docker:build:
+    desc: Пересобрать Docker образы
+    cmds:
+      - docker-compose build
+
+  docker:clean:
+    desc: Остановить и удалить контейнеры, volumes и сети
+    cmds:
+      - docker-compose down -v --remove-orphans
+
+  # ============================================
+  # База данных
+  # ============================================
+
+  db:up:
+    desc: Запустить PostgreSQL через Docker
+    cmds:
+      - docker-compose up -d postgres
+
+  db:down:
+    desc: Остановить PostgreSQL
+    cmds:
+      - docker-compose stop postgres
+
+  db:logs:
+    desc: Показать логи PostgreSQL
+    cmds:
+      - docker-compose logs -f postgres
+
+  db:migrate:
+    desc: Применить миграции базы данных
+    cmds:
+      - |
+        if [ -f migrations/*.sql ]; then
+          docker-compose exec -T postgres psql -U postgres -d linkkeeper < migrations/001_link_models_resource.sql
+        else
+          echo "Миграции не найдены"
+        fi
+
+  db:shell:
+    desc: Подключиться к PostgreSQL через psql
+    cmds:
+      - docker-compose exec postgres psql -U postgres -d linkkeeper
+
+  # ============================================
+  # API Service
+  # ============================================
+
+  api:build:
+    desc: Собрать API сервис
+    cmds:
+      - go build -o bin/api-service ./cmd/api-service
+
+  api:run:
+    desc: Запустить API сервис локально
+    deps: [db:up]
+    cmds:
+      - |
+        export HTTP_ADDR="{{.API_ADDR}}"
+        export POSTGRES_DSN="{{.POSTGRES_DSN}}"
+        go run ./cmd/api-service
+
+  api:test:
+    desc: Запустить тесты API сервиса
+    cmds:
+      - go test ./internal/api-service/...
+
+  # ============================================
+  # Bot Service
+  # ============================================
+
+  bot:build:
+    desc: Собрать Bot сервис
+    cmds:
+      - go build -o bin/bot-service ./cmd/bot-service
+
+  bot:run:
+    desc: Запустить Bot сервис локально
+    deps: [api:run]
+    cmds:
+      - |
+        if [ -z "{{.TELEGRAM_TOKEN}}" ]; then
+          echo "Ошибка: TELEGRAM_TOKEN не установлен"
+          echo "Установите переменную: export TELEGRAM_TOKEN=your_token"
+          exit 1
+        fi
+        export TELEGRAM_TOKEN="{{.TELEGRAM_TOKEN}}"
+        export API_BASE_URL="{{.API_BASE_URL}}"
+        go run ./cmd/bot-service
+
+  # ============================================
+  # Frontend
+  # ============================================
+
+  frontend:install:
+    desc: Установить зависимости фронтенда
+    dir: frontend
+    cmds:
+      - npm install
+
+  frontend:start:
+    desc: Запустить фронтенд (Expo)
+    dir: frontend
+    deps: [frontend:install]
+    cmds:
+      - npm start
+
+  frontend:web:
+    desc: Запустить фронтенд в браузере
+    dir: frontend
+    deps: [frontend:install]
+    cmds:
+      - npm run web
+
+  frontend:android:
+    desc: Запустить фронтенд на Android
+    dir: frontend
+    deps: [frontend:install]
+    cmds:
+      - npm run android
+
+  frontend:ios:
+    desc: Запустить фронтенд на iOS
+    dir: frontend
+    deps: [frontend:install]
+    cmds:
+      - npm run ios
+
+  # ============================================
+  # Разработка
+  # ============================================
+
+  dev:all:
+    desc: Запустить все сервисы для разработки (БД + API + Bot)
+    deps: [db:up]
+    cmds:
+      - task api:run
+      - task bot:run
+
+  dev:api:
+    desc: Запустить только API сервис для разработки
+    deps: [db:up]
+    cmds:
+      - task api:run
+
+  dev:frontend:
+    desc: Запустить фронтенд для разработки
+    cmds:
+      - task frontend:start
+
+  # ============================================
+  # Утилиты
+  # ============================================
+
+  clean:
+    desc: Очистить скомпилированные файлы
+    cmds:
+      - rm -rf bin/
+      - rm -rf frontend/node_modules/
+      - rm -rf frontend/.expo/
+
+  deps:
+    desc: Установить все зависимости (Go и npm)
+    cmds:
+      - go mod download
+      - go mod vendor
+      - task frontend:install
+
+  fmt:
+    desc: Форматировать Go код
+    cmds:
+      - go fmt ./...
+
+  lint:
+    desc: Проверить Go код линтером
+    cmds:
+      - go vet ./...
+
+  test:
+    desc: Запустить все тесты
+    cmds:
+      - go test ./...
+
+  # ============================================
+  # Полный запуск
+  # ============================================
+
+  start:
+    desc: Запустить весь проект (Docker Compose)
+    cmds:
+      - task docker:up
+      - |
+        echo "Сервисы запущены:"
+        echo "  - PostgreSQL: localhost:5432"
+        echo "  - API Service: http://localhost:8080"
+        echo "  - Bot Service: запущен (требует TELEGRAM_TOKEN)"
+        echo ""
+        echo "Для запуска фронтенда выполните: task frontend:start"
+
+  stop:
+    desc: Остановить весь проект
+    cmds:
+      - task docker:down
+
+  restart:
+    desc: Перезапустить весь проект
+    cmds:
+      - task stop
+      - task start

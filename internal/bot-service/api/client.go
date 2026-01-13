@@ -72,11 +72,11 @@ func (c *Client) MarkViewed(id string) error {
 }
 
 func (c *Client) RandomLink(resource string) (Link, error) {
-	url := c.baseURL + "/api/v1/links/random"
+	requestURL := c.baseURL + "/api/v1/links/random"
 	if resource != "" {
-		url += "?resource=" + url.QueryEscape(resource)
+		requestURL += "?resource=" + url.QueryEscape(resource)
 	}
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {
 		return Link{}, err
 	}

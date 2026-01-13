@@ -49,6 +49,13 @@ func (s *LinkService) MarkViewed(ctx context.Context, id string) (apiservice.Lin
 	return s.repo.MarkViewed(ctx, id)
 }
 
+func (s *LinkService) GetViewStats(ctx context.Context, days int) ([]apiservice.ViewStats, error) {
+	if days <= 0 {
+		days = 53 // По умолчанию 53 дня
+	}
+	return s.repo.GetViewStats(ctx, days)
+}
+
 func validateCreate(input apiservice.LinkCreateInput) error {
 	if input.URL == "" {
 		return fmt.Errorf("%w: url is required", apiservice.ErrInvalidInput)
