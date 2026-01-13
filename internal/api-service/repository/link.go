@@ -31,8 +31,8 @@ type LinkModel struct {
 
 func (r *LinkRepo) Create(ctx context.Context, input apiservice.LinkCreateInput) (apiservice.Link, error) {
 	model := LinkModel{
-		ID:   uuid.NewString(),
-		URL:  input.URL,
+		ID:       uuid.NewString(),
+		URL:      input.URL,
 		Resource: input.Resource,
 	}
 	if err := r.db.WithContext(ctx).Create(&model).Error; err != nil {
@@ -127,6 +127,76 @@ func (r *LinkRepo) MarkViewed(ctx context.Context, id string) (apiservice.Link, 
 		return apiservice.Link{}, apiservice.ErrNotFound
 	}
 	return r.GetByID(ctx, id)
+}
+
+func (r *LinkRepo) GetViewStats(ctx context.Context, days int) ([]apiservice.ViewStats, error) {
+	if days <= 0 {
+		days = 53
+	}
+	if days > 365 {
+		days = 365
+	}
+
+	type resultRow struct {
+		Date  string `gorm:"column:date"`
+		Count int64  `gorm:"column:count"`
+	}
+	var results []resultRow
+	startDate := time.Now().AddDate(0, 0, -days+1).Truncate(24 * time.Hour)
+	err := r.db.WithContext(ctx).
+		Model(&LinkModel{}).
+		Select("DATE(viewed_at)::text as date, COUNT(*)::bigint as count").
+		Where("viewed_at IS NOT NULL").
+		Where("viewed_at >= ?", startDate).
+		Group("DATE(viewed_at)").
+		Order("date ASC").
+		Scan(&results).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	statsMap := make(map[string]int64)
+	for _, r := range results {
+		statsMap[r.Date] = r.Count
+	}
+
+	var maxCount int64
+	for _, count := range statsMap {
+		if count > maxCount {
+			maxCount = count
+		}
+	}
+
+	now := time.Now()
+	stats := make([]apiservice.ViewStats, 0, days)
+	for i := days - 1; i >= 0; i-- {
+		date := now.AddDate(0, 0, -i)
+		dateStr := date.Format("2006-01-02")
+
+		count := statsMap[dateStr]
+		level := 0
+		if maxCount > 0 {
+			ratio := float64(count) / float64(maxCount)
+			if ratio > 0.8 {
+				level = 4
+			} else if ratio > 0.6 {
+				level = 3
+			} else if ratio > 0.4 {
+				level = 2
+			} else if ratio > 0.2 {
+				level = 1
+			}
+		}
+
+		stats = append(stats, apiservice.ViewStats{
+			Date:  dateStr,
+			Count: count,
+			Level: level,
+		})
+	}
+
+	return stats, nil
 }
 
 func mapErr(err error) error {

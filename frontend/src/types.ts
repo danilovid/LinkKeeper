@@ -17,3 +17,9 @@ export interface UpdateLinkInput {
   url?: string;
   resource?: string;
 }
+
+export interface ViewStats {
+  date: string;  // YYYY-MM-DD
+  count: number;
+  level: number; // 0-4 для визуализации
+}

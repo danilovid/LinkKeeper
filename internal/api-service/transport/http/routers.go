@@ -155,6 +155,21 @@ func (s *Server) MarkViewed() http.HandlerFunc {
 	}
 }
 
+func (s *Server) GetViewStats() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		days := parseIntDefault(r.URL.Query().Get("days"), 53)
+		if days > 365 {
+			days = 365
+		}
+		stats, err := s.uc.GetViewStats(r.Context(), days)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, stats)
+	}
+}
+
 func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)

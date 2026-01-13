@@ -1,5 +1,5 @@
 import { API_BASE_URL } from '../config';
-import { Link, CreateLinkInput, UpdateLinkInput } from '../types';
+import { Link, CreateLinkInput, UpdateLinkInput, ViewStats } from '../types';
 
 class ApiClient {
   private baseUrl: string;
@@ -70,6 +70,10 @@ class ApiClient {
     return this.request<Link>(`/links/${id}/viewed`, {
       method: 'POST',
     });
+  }
+
+  async getViewStats(days: number = 53): Promise<ViewStats[]> {
+    return this.request<ViewStats[]>(`/stats/views?days=${days}`);
   }
 }
 

@@ -56,6 +56,7 @@ func (s *Server) routes() {
 	api.HandleFunc("/links/{id}", s.Update()).Methods(http.MethodPatch)
 	api.HandleFunc("/links/{id}", s.Delete()).Methods(http.MethodDelete)
 	api.HandleFunc("/links/{id}/viewed", s.MarkViewed()).Methods(http.MethodPost)
+	api.HandleFunc("/stats/views", s.GetViewStats()).Methods(http.MethodGet)
 }
 
 func requestLogger(next http.Handler) http.Handler {
