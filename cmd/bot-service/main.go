@@ -15,9 +15,10 @@ func main() {
 	logger.Init()
 
 	cfg := bot.Config{
-		Token:      os.Getenv("TELEGRAM_TOKEN"),
-		APIBaseURL: os.Getenv("API_BASE_URL"),
-		Timeout:    readTimeout(),
+		Token:          os.Getenv("TELEGRAM_TOKEN"),
+		APIBaseURL:     os.Getenv("API_BASE_URL"),
+		UserServiceURL: os.Getenv("USER_SERVICE_URL"),
+		Timeout:        readTimeout(),
 	}
 
 	w, err := bot.NewWrapper(&cfg)

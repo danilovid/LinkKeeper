@@ -24,7 +24,6 @@ func (s *Server) Handler() http.Handler {
 	return s.routes()
 }
 
-// CreateUserRequest представляет запрос на создание пользователя
 type CreateUserRequest struct {
 	TelegramID int64  `json:"telegram_id"`
 	Username   string `json:"username,omitempty"`
@@ -32,7 +31,6 @@ type CreateUserRequest struct {
 	LastName   string `json:"last_name,omitempty"`
 }
 
-// UserResponse представляет ответ с данными пользователя
 type UserResponse struct {
 	ID         string `json:"id"`
 	TelegramID int64  `json:"telegram_id"`
@@ -43,12 +41,10 @@ type UserResponse struct {
 	UpdatedAt  string `json:"updated_at"`
 }
 
-// ExistsResponse представляет ответ на проверку существования пользователя
 type ExistsResponse struct {
 	Exists bool `json:"exists"`
 }
 
-// GetOrCreateUser получает существующего пользователя или создает нового
 func (s *Server) GetOrCreateUser(w http.ResponseWriter, r *http.Request) {
 	var req CreateUserRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -84,7 +80,6 @@ func (s *Server) GetOrCreateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resp)
 }
 
-// GetUserByID возвращает пользователя по ID
 func (s *Server) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	idStr := vars["id"]
@@ -116,7 +111,6 @@ func (s *Server) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resp)
 }
 
-// GetUserByTelegramID возвращает пользователя по Telegram ID
 func (s *Server) GetUserByTelegramID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	telegramID := vars["telegram_id"]
@@ -148,7 +142,6 @@ func (s *Server) GetUserByTelegramID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resp)
 }
 
-// CheckUserExists проверяет, существует ли пользователь
 func (s *Server) CheckUserExists(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	telegramID := vars["telegram_id"]

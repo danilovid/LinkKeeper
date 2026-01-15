@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// UserModel представляет пользователя в системе
 type UserModel struct {
 	ID         uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
 	TelegramID int64     `gorm:"uniqueIndex;not null" json:"telegram_id"`
@@ -18,12 +17,10 @@ type UserModel struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 }
 
-// TableName задает имя таблицы для GORM
 func (UserModel) TableName() string {
 	return "users"
 }
 
-// BeforeCreate хук GORM для установки UUID перед созданием
 func (u *UserModel) BeforeCreate(tx *gorm.DB) error {
 	if u.ID == uuid.Nil {
 		u.ID = uuid.New()

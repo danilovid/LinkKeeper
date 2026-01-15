@@ -2,8 +2,10 @@ version: '3'
 
 vars:
   API_ADDR: ":8080"
+  USER_ADDR: ":8081"
   POSTGRES_DSN: "postgres://postgres:postgres@localhost:5432/linkkeeper?sslmode=disable"
   API_BASE_URL: "http://localhost:8080"
+  USER_SERVICE_URL: "http://localhost:8081"
   TELEGRAM_TOKEN: ""
 
 tasks:
@@ -66,11 +68,14 @@ tasks:
     desc: Применить миграции базы данных
     cmds:
       - |
-        if [ -f migrations/*.sql ]; then
-          docker-compose exec -T postgres psql -U postgres -d linkkeeper < migrations/001_link_models_resource.sql
-        else
-          echo "Миграции не найдены"
-        fi
+        echo "Применение миграций..."
+        for file in migrations/*.sql; do
+          if [ -f "$file" ]; then
+            echo "Применяю $file"
+            docker-compose exec -T postgres psql -U postgres -d linkkeeper < "$file"
+          fi
+        done
+        echo "Миграции применены"
 
   db:shell:
     desc: Подключиться к PostgreSQL через psql
@@ -101,6 +106,29 @@ tasks:
       - go test ./internal/api-service/...
 
   # ============================================
+  # User Service
+  # ============================================
+
+  user:build:
+    desc: Собрать User сервис
+    cmds:
+      - go build -o bin/user-service ./cmd/user-service
+
+  user:run:
+    desc: Запустить User сервис локально
+    deps: [db:up]
+    cmds:
+      - |
+        export HTTP_ADDR="{{.USER_ADDR}}"
+        export POSTGRES_DSN="{{.POSTGRES_DSN}}"
+        go run ./cmd/user-service
+
+  user:test:
+    desc: Запустить тесты User сервиса
+    cmds:
+      - go test ./internal/user-service/...
+
+  # ============================================
   # Bot Service
   # ============================================
 
@@ -111,7 +139,7 @@ tasks:
 
   bot:run:
     desc: Запустить Bot сервис локально
-    deps: [api:run]
+    deps: [api:run, user:run]
     cmds:
       - |
         if [ -z "{{.TELEGRAM_TOKEN}}" ]; then
@@ -121,6 +149,7 @@ tasks:
         fi
         export TELEGRAM_TOKEN="{{.TELEGRAM_TOKEN}}"
         export API_BASE_URL="{{.API_BASE_URL}}"
+        export USER_SERVICE_URL="{{.USER_SERVICE_URL}}"
         go run ./cmd/bot-service
 
   # ============================================
@@ -227,6 +256,7 @@ tasks:
       - |
         echo "Сервисы запущены:"
         echo "  - PostgreSQL: localhost:5432"
+        echo "  - User Service: http://localhost:8081"
         echo "  - API Service: http://localhost:8080"
         echo "  - Bot Service: запущен (требует TELEGRAM_TOKEN)"
         echo ""
