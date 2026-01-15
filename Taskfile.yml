@@ -10,75 +10,75 @@ vars:
 
 tasks:
   default:
-    desc: Показать доступные задачи
+    desc: Show available tasks
     cmds:
       - task --list
 
   # ============================================
-  # Docker Compose задачи
+  # Docker Compose tasks
   # ============================================
   
   docker:up:
-    desc: Запустить все сервисы через Docker Compose
+    desc: Start all services via Docker Compose
     cmds:
       - docker-compose up -d
     preconditions:
       - test: -f docker-compose.yml
 
   docker:down:
-    desc: Остановить все сервисы Docker Compose
+    desc: Stop all Docker Compose services
     cmds:
       - docker-compose down
 
   docker:logs:
-    desc: Показать логи всех сервисов
+    desc: Show logs for all services
     cmds:
       - docker-compose logs -f
 
   docker:build:
-    desc: Пересобрать Docker образы
+    desc: Rebuild Docker images
     cmds:
       - docker-compose build
 
   docker:clean:
-    desc: Остановить и удалить контейнеры, volumes и сети
+    desc: Stop and remove containers, volumes and networks
     cmds:
       - docker-compose down -v --remove-orphans
 
   # ============================================
-  # База данных
+  # Database
   # ============================================
 
   db:up:
-    desc: Запустить PostgreSQL через Docker
+    desc: Start PostgreSQL via Docker
     cmds:
       - docker-compose up -d postgres
 
   db:down:
-    desc: Остановить PostgreSQL
+    desc: Stop PostgreSQL
     cmds:
       - docker-compose stop postgres
 
   db:logs:
-    desc: Показать логи PostgreSQL
+    desc: Show PostgreSQL logs
     cmds:
       - docker-compose logs -f postgres
 
   db:migrate:
-    desc: Применить миграции базы данных
+    desc: Apply database migrations
     cmds:
       - |
-        echo "Применение миграций..."
+        echo "Applying migrations..."
         for file in migrations/*.sql; do
           if [ -f "$file" ]; then
-            echo "Применяю $file"
+            echo "Applying $file"
             docker-compose exec -T postgres psql -U postgres -d linkkeeper < "$file"
           fi
         done
-        echo "Миграции применены"
+        echo "Migrations applied"
 
   db:shell:
-    desc: Подключиться к PostgreSQL через psql
+    desc: Connect to PostgreSQL via psql
     cmds:
       - docker-compose exec postgres psql -U postgres -d linkkeeper
 
@@ -87,12 +87,12 @@ tasks:
   # ============================================
 
   api:build:
-    desc: Собрать API сервис
+    desc: Build API service
     cmds:
       - go build -o bin/api-service ./cmd/api-service
 
   api:run:
-    desc: Запустить API сервис локально
+    desc: Run API service locally
     deps: [db:up]
     cmds:
       - |
@@ -101,7 +101,7 @@ tasks:
         go run ./cmd/api-service
 
   api:test:
-    desc: Запустить тесты API сервиса
+    desc: Run API service tests
     cmds:
       - go test ./internal/api-service/...
 
@@ -110,12 +110,12 @@ tasks:
   # ============================================
 
   user:build:
-    desc: Собрать User сервис
+    desc: Build User service
     cmds:
       - go build -o bin/user-service ./cmd/user-service
 
   user:run:
-    desc: Запустить User сервис локально
+    desc: Run User service locally
     deps: [db:up]
     cmds:
       - |
@@ -124,7 +124,7 @@ tasks:
         go run ./cmd/user-service
 
   user:test:
-    desc: Запустить тесты User сервиса
+    desc: Run User service tests
     cmds:
       - go test ./internal/user-service/...
 
@@ -133,18 +133,18 @@ tasks:
   # ============================================
 
   bot:build:
-    desc: Собрать Bot сервис
+    desc: Build Bot service
     cmds:
       - go build -o bin/bot-service ./cmd/bot-service
 
   bot:run:
-    desc: Запустить Bot сервис локально
+    desc: Run Bot service locally
     deps: [api:run, user:run]
     cmds:
       - |
         if [ -z "{{.TELEGRAM_TOKEN}}" ]; then
-          echo "Ошибка: TELEGRAM_TOKEN не установлен"
-          echo "Установите переменную: export TELEGRAM_TOKEN=your_token"
+          echo "Error: TELEGRAM_TOKEN is not set"
+          echo "Set the variable: export TELEGRAM_TOKEN=your_token"
           exit 1
         fi
         export TELEGRAM_TOKEN="{{.TELEGRAM_TOKEN}}"
@@ -157,118 +157,118 @@ tasks:
   # ============================================
 
   frontend:install:
-    desc: Установить зависимости фронтенда
+    desc: Install frontend dependencies
     dir: frontend
     cmds:
       - npm install
 
   frontend:start:
-    desc: Запустить фронтенд (Expo)
+    desc: Start frontend (Expo)
     dir: frontend
     deps: [frontend:install]
     cmds:
       - npm start
 
   frontend:web:
-    desc: Запустить фронтенд в браузере
+    desc: Start frontend in browser
     dir: frontend
     deps: [frontend:install]
     cmds:
       - npm run web
 
   frontend:android:
-    desc: Запустить фронтенд на Android
+    desc: Start frontend on Android
     dir: frontend
     deps: [frontend:install]
     cmds:
       - npm run android
 
   frontend:ios:
-    desc: Запустить фронтенд на iOS
+    desc: Start frontend on iOS
     dir: frontend
     deps: [frontend:install]
     cmds:
       - npm run ios
 
   # ============================================
-  # Разработка
+  # Development
   # ============================================
 
   dev:all:
-    desc: Запустить все сервисы для разработки (БД + API + Bot)
+    desc: Run all services for development (DB + API + Bot)
     deps: [db:up]
     cmds:
       - task api:run
       - task bot:run
 
   dev:api:
-    desc: Запустить только API сервис для разработки
+    desc: Run only API service for development
     deps: [db:up]
     cmds:
       - task api:run
 
   dev:frontend:
-    desc: Запустить фронтенд для разработки
+    desc: Run frontend for development
     cmds:
       - task frontend:start
 
   # ============================================
-  # Утилиты
+  # Utilities
   # ============================================
 
   clean:
-    desc: Очистить скомпилированные файлы
+    desc: Clean compiled files
     cmds:
       - rm -rf bin/
       - rm -rf frontend/node_modules/
       - rm -rf frontend/.expo/
 
   deps:
-    desc: Установить все зависимости (Go и npm)
+    desc: Install all dependencies (Go and npm)
     cmds:
       - go mod download
       - go mod vendor
       - task frontend:install
 
   fmt:
-    desc: Форматировать Go код
+    desc: Format Go code
     cmds:
       - go fmt ./...
 
   lint:
-    desc: Проверить Go код линтером
+    desc: Check Go code with linter
     cmds:
       - go vet ./...
 
   test:
-    desc: Запустить все тесты
+    desc: Run all tests
     cmds:
       - go test ./...
 
   # ============================================
-  # Полный запуск
+  # Full run
   # ============================================
 
   start:
-    desc: Запустить весь проект (Docker Compose)
+    desc: Start the entire project (Docker Compose)
     cmds:
       - task docker:up
       - |
-        echo "Сервисы запущены:"
+        echo "Services started:"
         echo "  - PostgreSQL: localhost:5432"
         echo "  - User Service: http://localhost:8081"
         echo "  - API Service: http://localhost:8080"
-        echo "  - Bot Service: запущен (требует TELEGRAM_TOKEN)"
+        echo "  - Bot Service: running (requires TELEGRAM_TOKEN)"
         echo ""
-        echo "Для запуска фронтенда выполните: task frontend:start"
+        echo "To start frontend run: task frontend:start"
 
   stop:
-    desc: Остановить весь проект
+    desc: Stop the entire project
     cmds:
       - task docker:down
 
   restart:
-    desc: Перезапустить весь проект
+    desc: Restart the entire project
     cmds:
       - task stop
       - task start

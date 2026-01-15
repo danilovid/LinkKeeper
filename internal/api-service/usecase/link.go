@@ -51,7 +51,7 @@ func (s *LinkService) MarkViewed(ctx context.Context, id string) (apiservice.Lin
 
 func (s *LinkService) GetViewStats(ctx context.Context, days int) ([]apiservice.ViewStats, error) {
 	if days <= 0 {
-		days = 53 // По умолчанию 53 дня
+		days = 53
 	}
 	return s.repo.GetViewStats(ctx, days)
 }

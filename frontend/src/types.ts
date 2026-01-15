@@ -21,5 +21,5 @@ export interface UpdateLinkInput {
 export interface ViewStats {
   date: string;  // YYYY-MM-DD
   count: number;
-  level: number; // 0-4 для визуализации
+  level: number;
 }

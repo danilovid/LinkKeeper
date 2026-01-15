@@ -22,9 +22,8 @@ type LinkUpdateInput struct {
 	Resource *string
 }
 
-// ViewStats представляет статистику просмотров по дням
 type ViewStats struct {
-	Date  string `json:"date"`  // Дата в формате YYYY-MM-DD
-	Count int64  `json:"count"` // Количество просмотров в этот день
-	Level int    `json:"level"` // Уровень интенсивности (0-4) для визуализации
+	Date  string `json:"date"`
+	Count int64  `json:"count"`
+	Level int    `json:"level"`
 }
