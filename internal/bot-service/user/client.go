@@ -9,13 +9,11 @@ import (
 	"time"
 )
 
-// Client представляет клиент для user-service
 type Client struct {
 	baseURL string
 	http    *http.Client
 }
 
-// User представляет пользователя
 type User struct {
 	ID         string `json:"id"`
 	TelegramID int64  `json:"telegram_id"`
@@ -26,7 +24,6 @@ type User struct {
 	UpdatedAt  string `json:"updated_at"`
 }
 
-// CreateUserRequest представляет запрос на создание пользователя
 type CreateUserRequest struct {
 	TelegramID int64  `json:"telegram_id"`
 	Username   string `json:"username,omitempty"`
@@ -34,12 +31,10 @@ type CreateUserRequest struct {
 	LastName   string `json:"last_name,omitempty"`
 }
 
-// ExistsResponse представляет ответ на проверку существования пользователя
 type ExistsResponse struct {
 	Exists bool `json:"exists"`
 }
 
-// NewClient создает новый клиент для user-service
 func NewClient(baseURL string, timeout time.Duration) *Client {
 	return &Client{
 		baseURL: strings.TrimRight(baseURL, "/"),
@@ -47,7 +42,6 @@ func NewClient(baseURL string, timeout time.Duration) *Client {
 	}
 }
 
-// GetOrCreateUser получает существующего пользователя или создает нового
 func (c *Client) GetOrCreateUser(telegramID int64, username, firstName, lastName string) (*User, error) {
 	reqData := CreateUserRequest{
 		TelegramID: telegramID,
@@ -85,7 +79,6 @@ func (c *Client) GetOrCreateUser(telegramID int64, username, firstName, lastName
 	return &user, nil
 }
 
-// GetUserByTelegramID возвращает пользователя по Telegram ID
 func (c *Client) GetUserByTelegramID(telegramID int64) (*User, error) {
 	url := fmt.Sprintf("%s/api/v1/users/telegram/%d", c.baseURL, telegramID)
 
@@ -112,7 +105,6 @@ func (c *Client) GetUserByTelegramID(telegramID int64) (*User, error) {
 	return &user, nil
 }
 
-// UserExists проверяет, существует ли пользователь
 func (c *Client) UserExists(telegramID int64) (bool, error) {
 	url := fmt.Sprintf("%s/api/v1/users/telegram/%d/exists", c.baseURL, telegramID)
 

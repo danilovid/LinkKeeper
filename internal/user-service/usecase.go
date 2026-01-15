@@ -2,7 +2,6 @@ package userservice
 
 import "github.com/google/uuid"
 
-// Usecase определяет бизнес-логику для работы с пользователями
 type Usecase interface {
 	CreateUser(telegramID int64, username, firstName, lastName string) (*UserModel, error)
 	GetUserByID(id uuid.UUID) (*UserModel, error)

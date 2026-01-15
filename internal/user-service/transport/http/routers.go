@@ -13,7 +13,6 @@ import (
 func (s *Server) routes() http.Handler {
 	r := mux.NewRouter()
 
-	// Middleware
 	middleware := alice.New(
 		logRequest,
 		cors.New(cors.Options{
@@ -24,16 +23,13 @@ func (s *Server) routes() http.Handler {
 		}).Handler,
 	)
 
-	// API v1 routes
 	api := r.PathPrefix("/api/v1").Subrouter()
 
-	// User routes
 	api.HandleFunc("/users", s.GetOrCreateUser).Methods("POST")
 	api.HandleFunc("/users/{id}", s.GetUserByID).Methods("GET")
 	api.HandleFunc("/users/telegram/{telegram_id}", s.GetUserByTelegramID).Methods("GET")
 	api.HandleFunc("/users/telegram/{telegram_id}/exists", s.CheckUserExists).Methods("GET")
 
-	// Health check
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))

@@ -4,15 +4,17 @@ import (
 	"strings"
 
 	"github.com/danilovid/linkkeeper/internal/bot-service/api"
+	"github.com/danilovid/linkkeeper/internal/bot-service/user"
 	"github.com/danilovid/linkkeeper/pkg/logger"
 	tb "gopkg.in/telebot.v4"
 	"gopkg.in/telebot.v4/middleware"
 )
 
 type Wrapper struct {
-	bot    *tb.Bot
-	config *Config
-	api    *api.Client
+	bot         *tb.Bot
+	config      *Config
+	api         *api.Client
+	userService *user.Client
 }
 
 var (
@@ -44,9 +46,10 @@ func NewWrapper(config *Config) (*Wrapper, error) {
 	b.Use(middleware.AutoRespond())
 
 	w := &Wrapper{
-		bot:    b,
-		config: config,
-		api:    api.NewClient(config.APIBaseURL, config.Timeout),
+		bot:         b,
+		config:      config,
+		api:         api.NewClient(config.APIBaseURL, config.Timeout),
+		userService: user.NewClient(config.UserServiceURL, config.Timeout),
 	}
 	w.prepare()
 	return w, nil
@@ -65,7 +68,21 @@ func (w *Wrapper) prepare() {
 	)
 
 	w.bot.Handle("/start", func(c tb.Context) error {
-		return c.Send("Choose an action:", menu)
+		sender := c.Sender()
+		if sender != nil {
+			_, err := w.userService.GetOrCreateUser(
+				sender.ID,
+				sender.Username,
+				sender.FirstName,
+				sender.LastName,
+			)
+			if err != nil {
+				logger.L().Error().Err(err).Int64("telegram_id", sender.ID).Msg("failed to get or create user")
+			} else {
+				logger.L().Info().Int64("telegram_id", sender.ID).Str("username", sender.Username).Msg("user registered or retrieved")
+			}
+		}
+		return c.Send("Welcome! Choose an action:", menu)
 	})
 
 	w.bot.Handle("/save", func(c tb.Context) error {
