@@ -15,20 +15,11 @@ import { apiClient } from '../api/client';
 import { Link } from '../types';
 import ViewStatsChart from '../components/ViewStatsChart';
 
-// Функция для определения размера экрана
 const getScreenDimensions = () => Dimensions.get('window');
 
-// Начальные размеры для создания стилей
 const initialDimensions = getScreenDimensions();
 const INITIAL_IS_DESKTOP = initialDimensions.width >= 768;
 
-/**
- * Современный интерфейс в стиле Cursor/GitHub
- * - Темная тема
- * - Минималистичный дизайн
- * - Чистая типографика
- * - Профессиональный вид
- */
 export default function ModernScreen() {
   const [links, setLinks] = useState<Link[]>([]);
   const [loading, setLoading] = useState(false);

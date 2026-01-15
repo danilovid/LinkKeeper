@@ -1,23 +1,23 @@
 # User Service
 
-Микросервис для управления пользователями LinkKeeper.
+Microservice for managing LinkKeeper users.
 
-## Описание
+## Description
 
-User Service автоматически регистрирует пользователей при первом взаимодействии с ботом и предоставляет API для персонализации.
+User Service automatically registers users on their first interaction with the bot and provides an API for personalization.
 
-## Функциональность
+## Features
 
-- ✅ Автоматическая регистрация пользователей из Telegram
-- ✅ Сохранение данных: Telegram ID, username, имя, фамилия
-- ✅ Проверка существования пользователя
-- ✅ Получение пользователя по Telegram ID
-- ✅ GetOrCreate паттерн (получить или создать)
+- ✅ Automatic user registration from Telegram
+- ✅ Data storage: Telegram ID, username, first name, last name
+- ✅ User existence check
+- ✅ Get user by Telegram ID
+- ✅ GetOrCreate pattern (get or create)
 
 ## API Endpoints
 
 ### POST /api/v1/users
-Создать или получить существующего пользователя (GetOrCreate)
+Create or get existing user (GetOrCreate)
 
 **Request:**
 ```json
@@ -43,17 +43,17 @@ User Service автоматически регистрирует пользов�
 ```
 
 ### GET /api/v1/users/{id}
-Получить пользователя по UUID
+Get user by UUID
 
-**Response:** JSON с данными пользователя
+**Response:** JSON with user data
 
 ### GET /api/v1/users/telegram/{telegram_id}
-Получить пользователя по Telegram ID
+Get user by Telegram ID
 
-**Response:** JSON с данными пользователя
+**Response:** JSON with user data
 
 ### GET /api/v1/users/telegram/{telegram_id}/exists
-Проверить, существует ли пользователь
+Check if user exists
 
 **Response:**
 ```json
@@ -67,51 +67,51 @@ Health check endpoint
 
 **Response:** `OK`
 
-## Запуск
+## Running
 
-### Через Docker Compose
+### Via Docker Compose
 ```bash
 task start
 ```
 
-### Локально
+### Locally
 ```bash
 task user:run
 ```
 
-## Конфигурация
+## Configuration
 
-Переменные окружения:
-- `HTTP_ADDR` - адрес для HTTP сервера (по умолчанию `:8081`)
-- `POSTGRES_DSN` - строка подключения к PostgreSQL
+Environment variables:
+- `HTTP_ADDR` - address for HTTP server (default `:8081`)
+- `POSTGRES_DSN` - PostgreSQL connection string
 
-## Интеграция с Bot Service
+## Integration with Bot Service
 
-Bot Service автоматически регистрирует пользователей при команде `/start`:
+Bot Service automatically registers users on `/start` command:
 
-1. Пользователь отправляет `/start` боту
-2. Bot-service отправляет данные в User-service
-3. User-service создает пользователя или возвращает существующего
-4. Пользователь может использовать функции бота
+1. User sends `/start` to the bot
+2. Bot-service sends data to User-service
+3. User-service creates user or returns existing one
+4. User can use bot features
 
-## База данных
+## Database
 
-### Таблица `users`
-- `id` (UUID) - уникальный идентификатор
-- `telegram_id` (BIGINT) - Telegram ID пользователя (уникальный)
+### Table `users`
+- `id` (UUID) - unique identifier
+- `telegram_id` (BIGINT) - Telegram user ID (unique)
 - `username` (VARCHAR) - Telegram username
-- `first_name` (VARCHAR) - имя
-- `last_name` (VARCHAR) - фамилия
-- `created_at` (TIMESTAMP) - дата создания
-- `updated_at` (TIMESTAMP) - дата обновления
+- `first_name` (VARCHAR) - first name
+- `last_name` (VARCHAR) - last name
+- `created_at` (TIMESTAMP) - creation date
+- `updated_at` (TIMESTAMP) - update date
 
-### Связи
+### Relations
 - `link_models.user_id` → `users.id` (ON DELETE CASCADE)
 
-## Тестирование
+## Testing
 
 ```bash
-# Создать пользователя
+# Create user
 curl -X POST http://localhost:8081/api/v1/users \
   -H "Content-Type: application/json" \
   -d '{
@@ -121,42 +121,42 @@ curl -X POST http://localhost:8081/api/v1/users \
     "last_name": "User"
   }'
 
-# Проверить существование
+# Check existence
 curl http://localhost:8081/api/v1/users/telegram/123456789/exists
 
-# Получить пользователя
+# Get user
 curl http://localhost:8081/api/v1/users/telegram/123456789
 ```
 
-## Структура
+## Structure
 
 ```
-cmd/user-service/           # Точка входа
-internal/user-service/      # Бизнес-логика
-  ├── models.go            # Модели данных
-  ├── repository.go        # Интерфейс репозитория
+cmd/user-service/           # Entry point
+internal/user-service/      # Business logic
+  ├── models.go            # Data models
+  ├── repository.go        # Repository interface
   ├── repository/
-  │   └── user.go         # Реализация репозитория
-  ├── usecase.go          # Интерфейс use case
+  │   └── user.go         # Repository implementation
+  ├── usecase.go          # Use case interface
   ├── usecase/
-  │   └── user.go         # Реализация use case
-  └── transport/http/     # HTTP транспорт
+  │   └── user.go         # Use case implementation
+  └── transport/http/     # HTTP transport
       ├── http.go         # Handlers
-      └── routers.go      # Роуты
+      └── routers.go      # Routes
 ```
 
-## Архитектура
+## Architecture
 
-User Service следует Clean Architecture:
-- **Models** - определение структур данных
-- **Repository** - работа с БД через GORM
-- **Use Case** - бизнес-логика
+User Service follows Clean Architecture:
+- **Models** - data structure definitions
+- **Repository** - database operations via GORM
+- **Use Case** - business logic
 - **Transport** - HTTP API (gorilla/mux)
 
-## Логирование
+## Logging
 
-Использует `zerolog` для структурированного логирования.
+Uses `zerolog` for structured logging.
 
-## Порты
+## Ports
 
 - HTTP API: `8081`
