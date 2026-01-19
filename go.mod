@@ -10,12 +10,15 @@ require (
 	github.com/justinas/alice v1.2.0
 	github.com/rs/cors v1.11.1
 	github.com/rs/zerolog v1.33.0
+	github.com/stretchr/testify v1.11.1
 	gopkg.in/telebot.v4 v4.0.0-beta.5
 	gorm.io/driver/postgres v1.5.9
-	gorm.io/gorm v1.25.12
+	gorm.io/driver/sqlite v1.6.0
+	gorm.io/gorm v1.30.0
 )
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.8.0 // indirect
@@ -24,7 +27,11 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/mattn/go-sqlite3 v1.14.22 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	golang.org/x/sync v0.17.0 // indirect
 	golang.org/x/sys v0.12.0 // indirect
 	golang.org/x/text v0.29.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

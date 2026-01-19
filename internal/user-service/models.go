@@ -8,7 +8,7 @@ import (
 )
 
 type UserModel struct {
-	ID         uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
+	ID         uuid.UUID `gorm:"type:char(36);primary_key" json:"id"`
 	TelegramID int64     `gorm:"uniqueIndex;not null" json:"telegram_id"`
 	Username   string    `gorm:"type:varchar(255)" json:"username,omitempty"`
 	FirstName  string    `gorm:"type:varchar(255)" json:"first_name,omitempty"`
