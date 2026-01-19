@@ -19,8 +19,8 @@ interface ViewStatsChartProps {
 }
 
 /**
- * Компонент графика просмотров в стиле GitHub
- * Отображает статистику просмотров по дням в виде квадратиков
+ * View statistics chart component in GitHub style
+ * Displays view statistics by day as squares
  */
 export default function ViewStatsChart({ days = 365 }: ViewStatsChartProps) {
   const [stats, setStats] = useState<ViewStats[]>([]);
@@ -37,18 +37,18 @@ export default function ViewStatsChart({ days = 365 }: ViewStatsChartProps) {
       setLoading(true);
       const data = await apiClient.getViewStats(days);
       
-      // Убеждаемся, что получили все дни
+      // Make sure we got all days
       if (data.length !== days) {
         console.warn(`Expected ${days} days, got ${data.length}`);
       }
       
       setStats(data);
       
-      // Вычисляем общее количество просмотров
+      // Calculate total views
       const total = data.reduce((sum, stat) => sum + stat.count, 0);
       setTotalViews(total);
       
-      // Отладочная информация
+      // Debug information
       const daysWithViews = data.filter(d => d.count > 0).length;
       const daysWithoutViews = data.filter(d => d.count === 0).length;
       console.log(`Stats loaded: ${daysWithViews} days with views, ${daysWithoutViews} days without views`);
@@ -62,15 +62,15 @@ export default function ViewStatsChart({ days = 365 }: ViewStatsChartProps) {
   const getColorForLevel = (level: number): string => {
     switch (level) {
       case 0:
-        return '#21262d'; // Нет просмотров - более светлый, чтобы был виден
+        return '#21262d'; // No views - lighter so it's visible
       case 1:
-        return '#0e4429'; // Низкий уровень
+        return '#0e4429'; // Low level
       case 2:
-        return '#006d32'; // Средний уровень
+        return '#006d32'; // Medium level
       case 3:
-        return '#26a641'; // Высокий уровень
+        return '#26a641'; // High level
       case 4:
-        return '#39d353'; // Очень высокий уровень
+        return '#39d353'; // Very high level
       default:
         return '#21262d';
     }
@@ -83,34 +83,34 @@ export default function ViewStatsChart({ days = 365 }: ViewStatsChartProps) {
     return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
   };
 
-  // Группируем по неделям для отображения
-  // Убеждаемся, что все дни отображаются, даже если их меньше 7 в последней неделе
+  // Group by weeks for display
+  // Make sure all days are displayed, even if there are fewer than 7 in the last week
   const weeks: ViewStats[][] = [];
-  const weekMonths: (string | null)[] = []; // Месяц для каждой недели
+  const weekMonths: (string | null)[] = []; // Month for each week
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   
   for (let i = 0; i < stats.length; i += 7) {
     const week = stats.slice(i, i + 7);
-    // Заполняем неделю до 7 дней, если нужно (для правильного отображения)
+    // Fill week to 7 days if needed (for proper display)
     while (week.length < 7 && i + week.length < stats.length) {
-      // Это не должно произойти, но на всякий случай
+      // This shouldn't happen, but just in case
       break;
     }
     weeks.push(week);
     
-    // Определяем месяц для этой недели (берем первый день недели)
+    // Determine month for this week (take first day of week)
     if (week.length > 0) {
       const firstDay = new Date(week[0].date);
       const weekIndex = weeks.length - 1;
       
-      // Проверяем, начинается ли новый месяц в этой неделе
-      // Показываем месяц, если это первая неделя месяца или если предыдущая неделя была другого месяца
+      // Check if new month starts in this week
+      // Show month if this is first week of month or if previous week was different month
       let showMonth: string | null = null;
       if (weekIndex === 0) {
-        // Первая неделя - всегда показываем месяц
+        // First week - always show month
         showMonth = monthNames[firstDay.getMonth()];
       } else {
-        // Проверяем предыдущую неделю
+        // Check previous week
         const prevWeek = weeks[weekIndex - 1];
         if (prevWeek && prevWeek.length > 0) {
           const prevFirstDay = new Date(prevWeek[0].date);
@@ -125,7 +125,7 @@ export default function ViewStatsChart({ days = 365 }: ViewStatsChartProps) {
     }
   }
   
-  // Убеждаемся, что у нас есть все дни
+  // Make sure we have all days
   const totalDays = weeks.reduce((sum, week) => sum + week.length, 0);
   if (totalDays !== stats.length) {
     console.warn(`Days mismatch: expected ${stats.length}, got ${totalDays}`);
@@ -144,7 +144,7 @@ export default function ViewStatsChart({ days = 365 }: ViewStatsChartProps) {
     );
   }
 
-  // Если нет данных, показываем пустую сетку
+  // If no data, show empty grid
   if (stats.length === 0) {
     return (
       <View style={styles.container}>
@@ -182,7 +182,7 @@ export default function ViewStatsChart({ days = 365 }: ViewStatsChartProps) {
         contentContainerStyle={styles.chartScrollContent}
       >
         <View style={styles.chartContainer}>
-          {/* Месяцы - отображаются над графиком */}
+          {/* Months - displayed above chart */}
           <View style={styles.monthsContainer}>
             {weeks.map((week, weekIndex) => {
               const month = weekMonths[weekIndex];
@@ -194,7 +194,7 @@ export default function ViewStatsChart({ days = 365 }: ViewStatsChartProps) {
             })}
           </View>
           
-          {/* График с квадратиками */}
+          {/* Chart with squares */}
           <View style={styles.weeksContainer}>
             {weeks.length > 0 ? (
               weeks.map((week, weekIndex) => (
@@ -227,7 +227,7 @@ export default function ViewStatsChart({ days = 365 }: ViewStatsChartProps) {
         </View>
       </ScrollView>
 
-      {/* Легенда - всегда видна */}
+      {/* Legend - always visible */}
       <View style={styles.legend}>
         <Text style={styles.legendText}>Less</Text>
         <View style={styles.legendColors}>

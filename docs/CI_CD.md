@@ -76,8 +76,6 @@ Install hooks:
 ```bash
 task hooks:install
 # or
-make install-hooks
-# or
 pre-commit install
 ```
 
@@ -131,22 +129,6 @@ task test:unit
 
 # Run only integration tests
 task test:integration
-```
-
-### Using Makefile
-
-```bash
-# Run linter
-make lint
-
-# Run tests
-make test
-
-# Run tests with coverage
-make test-coverage
-
-# Format code
-make fmt
 ```
 
 ## Environment Variables

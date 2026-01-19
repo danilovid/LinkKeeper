@@ -1,76 +1,76 @@
-# Предложения по улучшению дизайна
+# Design Improvement Suggestions
 
-## Текущие проблемы:
-- ❌ Слишком большие кнопки (48px) - не подходят для десктопа
-- ❌ Большие формы с большими полями ввода
-- ❌ Вертикальный toolbar - занимает много места
-- ❌ Не адаптивный - одинаковый размер для всех экранов
+## Current issues:
+- ❌ Buttons too large (48px) - not suitable for desktop
+- ❌ Large forms with large input fields
+- ❌ Vertical toolbar - takes up too much space
+- ❌ Not responsive - same size for all screens
 
-## Варианты улучшения:
+## Improvement options:
 
-### Вариант 1: Адаптивный дизайн с breakpoints
-**Идея:** Разные размеры для десктопа (>768px) и мобильных (<768px)
+### Option 1: Responsive design with breakpoints
+**Idea:** Different sizes for desktop (>768px) and mobile (<768px)
 
-**Для десктопа:**
-- Кнопки: 32-36px высота (вместо 48px)
-- Поля ввода: 36-40px высота (вместо 52px)
-- Горизонтальный toolbar (поиск и кнопки в одну строку)
-- Компактный header (меньше padding)
-- Более мелкие шрифты (14px вместо 16px)
-- Плотнее расположение элементов
+**For desktop:**
+- Buttons: 32-36px height (instead of 48px)
+- Input fields: 36-40px height (instead of 52px)
+- Horizontal toolbar (search and buttons in one row)
+- Compact header (less padding)
+- Smaller fonts (14px instead of 16px)
+- Tighter element spacing
 
-**Для мобильных:**
-- Сохранить текущие размеры (48px кнопки, 52px поля)
-- Вертикальный layout
+**For mobile:**
+- Keep current sizes (48px buttons, 52px fields)
+- Vertical layout
 
-### Вариант 2: Компактный десктопный стиль
-**Идея:** Стиль как в VS Code / Cursor - очень компактный
+### Option 2: Compact desktop style
+**Idea:** Style like VS Code / Cursor - very compact
 
-**Особенности:**
-- Кнопки: 28-32px
-- Поля ввода: 32px
-- Компактные иконки
-- Минимальные отступы
-- Плотная сетка карточек (2-3 колонки на десктопе)
+**Features:**
+- Buttons: 28-32px
+- Input fields: 32px
+- Compact icons
+- Minimal spacing
+- Dense card grid (2-3 columns on desktop)
 
-### Вариант 3: Гибридный подход
-**Идея:** Компактный по умолчанию, но с возможностью увеличения для мобильных
+### Option 3: Hybrid approach
+**Idea:** Compact by default, but with ability to scale up for mobile
 
-**Особенности:**
-- Базовые размеры компактные (32-36px)
-- Автоматическое увеличение на мобильных
-- Горизонтальный layout на десктопе
-- Вертикальный на мобильных
+**Features:**
+- Base sizes are compact (32-36px)
+- Automatic scaling on mobile
+- Horizontal layout on desktop
+- Vertical on mobile
 
-## Рекомендация:
-**Вариант 1** - самый сбалансированный:
-- ✅ Комфортно на десктопе (компактно)
-- ✅ Удобно на мобильных (большие touch-таргеты)
-- ✅ Адаптивный и современный
-- ✅ Сохраняет стиль Cursor/GitHub
+## Recommendation:
+**Option 1** - most balanced:
+- ✅ Comfortable on desktop (compact)
+- ✅ Convenient on mobile (large touch targets)
+- ✅ Responsive and modern
+- ✅ Maintains Cursor/GitHub style
 
-## Что будет изменено:
+## What will be changed:
 
 1. **Header:**
-   - Десктоп: padding 12px, компактная статистика
-   - Мобильные: padding 16-20px
+   - Desktop: 12px padding, compact statistics
+   - Mobile: 16-20px padding
 
-2. **Кнопки:**
-   - Десктоп: 32-36px высота, padding 8-12px
-   - Мобильные: 48px высота, padding 14px
+2. **Buttons:**
+   - Desktop: 32-36px height, 8-12px padding
+   - Mobile: 48px height, 14px padding
 
-3. **Формы:**
-   - Десктоп: 36-40px высота полей, компактные кнопки
-   - Мобильные: 52px высота, большие кнопки
+3. **Forms:**
+   - Desktop: 36-40px field height, compact buttons
+   - Mobile: 52px height, large buttons
 
 4. **Toolbar:**
-   - Десктоп: горизонтальный (поиск и кнопки в ряд)
-   - Мобильные: вертикальный
+   - Desktop: horizontal (search and buttons in a row)
+   - Mobile: vertical
 
-5. **Карточки:**
-   - Десктоп: меньше padding, компактнее метаданные
-   - Мобильные: текущие размеры
+5. **Cards:**
+   - Desktop: less padding, more compact metadata
+   - Mobile: current sizes
 
-6. **Шрифты:**
-   - Десктоп: 14px основной, 12px вторичный
-   - Мобильные: 16px основной, 13px вторичный
+6. **Fonts:**
+   - Desktop: 14px primary, 12px secondary
+   - Mobile: 16px primary, 13px secondary

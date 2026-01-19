@@ -31,7 +31,7 @@ export default function ModernScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [dimensions, setDimensions] = useState(getScreenDimensions());
 
-  // Отслеживаем изменение размера экрана
+  // Track screen size changes
   useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
       setDimensions(window);
@@ -445,7 +445,7 @@ export default function ModernScreen() {
   );
 }
 
-// Адаптивные размеры (используем начальное значение для создания стилей)
+// Responsive sizes (use initial value to create styles)
 const getResponsiveStyles = (isDesktop: boolean) => ({
   // Header
   headerPadding: isDesktop ? 12 : 20,
@@ -487,7 +487,7 @@ const getResponsiveStyles = (isDesktop: boolean) => ({
   filterChipTextSize: isDesktop ? 12 : 14,
 });
 
-// Используем начальное значение для создания базовых стилей
+// Use initial value to create base styles
 const responsive = getResponsiveStyles(INITIAL_IS_DESKTOP);
 
 const styles = StyleSheet.create({
@@ -905,5 +905,5 @@ const styles = StyleSheet.create({
     gap: responsive.toolbarGap,
     alignItems: 'center',
   },
-  // Используем те же стили для checkbox и deleteIconButton
+  // Use the same styles for checkbox and deleteIconButton
 });

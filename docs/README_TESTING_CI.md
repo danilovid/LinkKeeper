@@ -80,8 +80,7 @@ Located in `.pre-commit-config.yaml`
 
 - `.golangci.yml` - Linter configuration
 - `.pre-commit-config.yaml` - Pre-commit hooks
-- `Makefile` - Alternative task runner
-- `Taskfile.yml` - Updated with test commands
+- `Taskfile.yml` - Task runner with all project commands
 
 ### ✅ Documentation
 
@@ -127,8 +126,7 @@ LinkKeeper/
 │   └── integration_test.go     # ✨ Integration tests
 ├── .golangci.yml               # ✨ Linter config
 ├── .pre-commit-config.yaml     # ✨ Pre-commit hooks
-├── Makefile                    # ✨ Make commands
-├── Taskfile.yml                # Updated with test tasks
+├── Taskfile.yml                # ✨ Task runner with all commands
 ├── docs/
 │   ├── TESTING.md              # ✨ Testing guide
 │   ├── CI_CD.md                # ✨ CI/CD guide
@@ -143,9 +141,6 @@ LinkKeeper/
 ```bash
 # Install pre-commit hooks (once)
 task hooks:install
-
-# Or with make
-make install-hooks
 ```
 
 ### 2. While Developing
@@ -209,12 +204,6 @@ task test:integration    # Integration tests only
 task test:coverage       # With HTML coverage report
 task ci:local            # Full CI simulation
 
-# Make
-make test                # All tests
-make test-coverage       # With coverage report
-make lint                # Run linter
-make fmt                 # Format code
-
 # Go directly
 go test ./...                              # All tests
 go test -v ./...                           # Verbose
@@ -227,7 +216,7 @@ go test -coverprofile=coverage.out ./...  # Generate coverage
 
 ```bash
 task lint                # Run all linters
-make lint                # Same with make
+task fmt                 # Format code
 golangci-lint run        # Direct command
 go fmt ./...             # Format code
 go vet ./...             # Static analysis
