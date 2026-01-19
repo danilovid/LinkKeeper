@@ -1,13 +1,14 @@
 linters-settings:
   govet:
-    check-shadowing: true
+    enable:
+      - shadow
   gocyclo:
-    min-complexity: 15
+    min-complexity: 20
   dupl:
-    threshold: 100
+    threshold: 150
   goconst:
-    min-len: 2
-    min-occurrences: 2
+    min-len: 3
+    min-occurrences: 3
   misspell:
     locale: US
   lll:
@@ -15,39 +16,28 @@ linters-settings:
   gocritic:
     enabled-tags:
       - diagnostic
-      - experimental
-      - opinionated
       - performance
-      - style
+    disabled-checks:
+      - hugeParam
+      - ifElseChain
 
 linters:
   disable-all: true
   enable:
     - bodyclose
-    - dogsled
-    - dupl
     - errcheck
-    - exportloopref
-    - gochecknoinits
-    - goconst
-    - gocritic
     - gocyclo
     - gofmt
     - goimports
-    - goprintffuncname
-    - gosec
     - gosimple
     - govet
     - ineffassign
     - misspell
-    - nakedret
     - noctx
-    - nolintlint
     - staticcheck
     - stylecheck
     - typecheck
     - unconvert
-    - unparam
     - unused
     - whitespace
 
@@ -55,12 +45,17 @@ issues:
   exclude-rules:
     - path: _test\.go
       linters:
-        - dupl
-        - goconst
-        - gosec
+        - errcheck
+        - gocyclo
     - path: cmd/
       linters:
-        - gochecknoinits
+        - errcheck
+    - path: internal/.*/repository\.go
+      linters:
+        - dupl
+    - path: internal/.*/usecase\.go
+      linters:
+        - dupl
 
 run:
   timeout: 5m

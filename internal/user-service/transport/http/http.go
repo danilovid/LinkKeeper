@@ -77,7 +77,9 @@ func (s *Server) GetOrCreateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(resp)
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		logger.L().Error().Err(err).Msg("failed to encode response")
+	}
 }
 
 func (s *Server) GetUserByID(w http.ResponseWriter, r *http.Request) {
@@ -108,7 +110,9 @@ func (s *Server) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(resp)
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		logger.L().Error().Err(err).Msg("failed to encode response")
+	}
 }
 
 func (s *Server) GetUserByTelegramID(w http.ResponseWriter, r *http.Request) {
@@ -139,7 +143,9 @@ func (s *Server) GetUserByTelegramID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(resp)
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		logger.L().Error().Err(err).Msg("failed to encode response")
+	}
 }
 
 func (s *Server) CheckUserExists(w http.ResponseWriter, r *http.Request) {
@@ -161,5 +167,7 @@ func (s *Server) CheckUserExists(w http.ResponseWriter, r *http.Request) {
 
 	resp := ExistsResponse{Exists: exists}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(resp)
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		logger.L().Error().Err(err).Msg("failed to encode response")
+	}
 }

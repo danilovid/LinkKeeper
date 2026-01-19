@@ -40,16 +40,16 @@ func Health(w http.ResponseWriter, _ *http.Request) {
 func (s *Server) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req createLinkRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "bad json", http.StatusBadRequest)
-		return
-	}
-	req.URL = strings.TrimSpace(req.URL)
-	req.Resource = strings.TrimSpace(req.Resource)
-	input := apiservice.LinkCreateInput{
-		URL:      req.URL,
-		Resource: req.Resource,
-	}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, "bad json", http.StatusBadRequest)
+			return
+		}
+		req.URL = strings.TrimSpace(req.URL)
+		req.Resource = strings.TrimSpace(req.Resource)
+		input := apiservice.LinkCreateInput{
+			URL:      req.URL,
+			Resource: req.Resource,
+		}
 		link, err := s.uc.Create(r.Context(), input)
 		if err != nil {
 			writeError(w, err)
@@ -111,18 +111,18 @@ func (s *Server) Update() http.HandlerFunc {
 			http.Error(w, "bad json", http.StatusBadRequest)
 			return
 		}
-	if req.URL != nil {
-		trimmed := strings.TrimSpace(*req.URL)
-		req.URL = &trimmed
-	}
-	if req.Resource != nil {
-		trimmed := strings.TrimSpace(*req.Resource)
-		req.Resource = &trimmed
-	}
-	input := apiservice.LinkUpdateInput{
-		URL:      req.URL,
-		Resource: req.Resource,
-	}
+		if req.URL != nil {
+			trimmed := strings.TrimSpace(*req.URL)
+			req.URL = &trimmed
+		}
+		if req.Resource != nil {
+			trimmed := strings.TrimSpace(*req.Resource)
+			req.Resource = &trimmed
+		}
+		input := apiservice.LinkUpdateInput{
+			URL:      req.URL,
+			Resource: req.Resource,
+		}
 		link, err := s.uc.Update(r.Context(), id, input)
 		if err != nil {
 			writeError(w, err)
