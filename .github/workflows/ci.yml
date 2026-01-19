@@ -39,8 +39,7 @@ jobs:
       - name: Install dependencies
         run: |
           go mod download
-          go install github.com/stretchr/testify/assert@latest
-          go install github.com/stretchr/testify/mock@latest
+          go mod tidy
 
       - name: Run go fmt
         run: |
