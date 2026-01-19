@@ -270,8 +270,8 @@ go tool cover -func=coverage.out
 
 ## Documentation
 
-- See `TESTING.md` for detailed testing guide
-- See `CI_CD.md` for CI/CD documentation
+- See [TESTING.md](./TESTING.md) for detailed testing guide
+- See [CI_CD.md](./CI_CD.md) for CI/CD documentation
 - See `.github/workflows/ci.yml` for pipeline configuration
 - See `.golangci.yml` for linter configuration
 
@@ -289,7 +289,7 @@ ci: update GitHub Actions workflow
 ## Contact & Support
 
 For questions about testing:
-1. Check `TESTING.md` documentation
+1. Check [TESTING.md](./TESTING.md) documentation
 2. Review existing tests for examples
 3. Ask in team chat
 4. Create an issue if you find problems

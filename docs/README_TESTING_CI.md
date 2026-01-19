@@ -85,10 +85,10 @@ Located in `.pre-commit-config.yaml`
 
 ### ✅ Documentation
 
-- `TESTING.md` - Comprehensive testing guide
-- `CI_CD.md` - CI/CD documentation
-- `TEST_SUMMARY.md` - Coverage summary
-- `README_TESTING_CI.md` - This file
+- [TESTING.md](./TESTING.md) - Comprehensive testing guide
+- [CI_CD.md](./CI_CD.md) - CI/CD documentation
+- [TEST_SUMMARY.md](./TEST_SUMMARY.md) - Coverage summary
+- [README_TESTING_CI.md](./README_TESTING_CI.md) - This file
 
 ## Testing Stack
 
@@ -129,10 +129,11 @@ LinkKeeper/
 ├── .pre-commit-config.yaml     # ✨ Pre-commit hooks
 ├── Makefile                    # ✨ Make commands
 ├── Taskfile.yml                # Updated with test tasks
-├── TESTING.md                  # ✨ Testing guide
-├── CI_CD.md                    # ✨ CI/CD guide
-├── TEST_SUMMARY.md             # ✨ Coverage summary
-└── README_TESTING_CI.md        # ✨ This file
+├── docs/
+│   ├── TESTING.md              # ✨ Testing guide
+│   ├── CI_CD.md                # ✨ CI/CD guide
+│   ├── TEST_SUMMARY.md         # ✨ Coverage summary
+│   └── README_TESTING_CI.md    # ✨ This file
 ```
 
 ## Development Workflow
@@ -432,7 +433,7 @@ Types:
 ## Support
 
 If you have questions:
-1. Check documentation (TESTING.md, CI_CD.md)
+1. Check documentation ([TESTING.md](./TESTING.md), [CI_CD.md](./CI_CD.md))
 2. Look at existing tests for examples
 3. Ask team members
 4. Create an issue
