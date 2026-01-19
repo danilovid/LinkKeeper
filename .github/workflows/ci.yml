@@ -43,9 +43,10 @@ jobs:
 
       - name: Run go fmt
         run: |
-          if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
+          unformatted=$(gofmt -s -l $(find . -name '*.go' -not -path './vendor/*' -not -path './.git/*' 2>/dev/null))
+          if [ -n "$unformatted" ]; then
             echo "Please run 'go fmt ./...'"
-            gofmt -s -l .
+            echo "$unformatted"
             exit 1
           fi
 
