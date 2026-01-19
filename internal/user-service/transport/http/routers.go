@@ -32,7 +32,9 @@ func (s *Server) routes() http.Handler {
 
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		if _, err := w.Write([]byte("OK")); err != nil {
+			logger.L().Error().Err(err).Msg("failed to write health response")
+		}
 	}).Methods("GET")
 
 	return middleware.Then(r)

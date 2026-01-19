@@ -71,7 +71,9 @@ func (w *Wrapper) prepare() {
 	w.bot.Handle("/start", func(c tb.Context) error {
 		sender := c.Sender()
 		if sender != nil {
+			ctx := context.Background()
 			_, err := w.userService.GetOrCreateUser(
+				ctx,
 				sender.ID,
 				sender.Username,
 				sender.FirstName,
