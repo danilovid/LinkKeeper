@@ -2,6 +2,7 @@ package user
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -42,7 +43,7 @@ func NewClient(baseURL string, timeout time.Duration) *Client {
 	}
 }
 
-func (c *Client) GetOrCreateUser(telegramID int64, username, firstName, lastName string) (*User, error) {
+func (c *Client) GetOrCreateUser(ctx context.Context, telegramID int64, username, firstName, lastName string) (*User, error) {
 	reqData := CreateUserRequest{
 		TelegramID: telegramID,
 		Username:   username,
@@ -55,7 +56,7 @@ func (c *Client) GetOrCreateUser(telegramID int64, username, firstName, lastName
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", c.baseURL+"/api/v1/users", bytes.NewReader(payload))
+	req, err := http.NewRequestWithContext(ctx, "POST", c.baseURL+"/api/v1/users", bytes.NewReader(payload))
 	if err != nil {
 		return nil, err
 	}
@@ -79,10 +80,10 @@ func (c *Client) GetOrCreateUser(telegramID int64, username, firstName, lastName
 	return &user, nil
 }
 
-func (c *Client) GetUserByTelegramID(telegramID int64) (*User, error) {
+func (c *Client) GetUserByTelegramID(ctx context.Context, telegramID int64) (*User, error) {
 	url := fmt.Sprintf("%s/api/v1/users/telegram/%d", c.baseURL, telegramID)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
@@ -105,10 +106,10 @@ func (c *Client) GetUserByTelegramID(telegramID int64) (*User, error) {
 	return &user, nil
 }
 
-func (c *Client) UserExists(telegramID int64) (bool, error) {
+func (c *Client) UserExists(ctx context.Context, telegramID int64) (bool, error) {
 	url := fmt.Sprintf("%s/api/v1/users/telegram/%d/exists", c.baseURL, telegramID)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, http.NoBody)
 	if err != nil {
 		return false, err
 	}

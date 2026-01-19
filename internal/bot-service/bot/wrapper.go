@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"context"
 	"strings"
 
 	"github.com/danilovid/linkkeeper/internal/bot-service/api"
@@ -70,7 +71,9 @@ func (w *Wrapper) prepare() {
 	w.bot.Handle("/start", func(c tb.Context) error {
 		sender := c.Sender()
 		if sender != nil {
+			ctx := context.Background()
 			_, err := w.userService.GetOrCreateUser(
+				ctx,
 				sender.ID,
 				sender.Username,
 				sender.FirstName,
@@ -90,7 +93,8 @@ func (w *Wrapper) prepare() {
 		if url == "" {
 			return c.Send("usage: /save <url>")
 		}
-		id, err := w.api.CreateLink(url)
+		ctx := context.Background()
+		id, err := w.api.CreateLink(ctx, url)
 		if err != nil {
 			logger.L().Error().Err(err).Str("url", url).Msg("create link failed")
 			return c.Send("failed to save link")
@@ -103,7 +107,8 @@ func (w *Wrapper) prepare() {
 		if id == "" {
 			return c.Send("usage: /viewed <id>")
 		}
-		if err := w.api.MarkViewed(id); err != nil {
+		ctx := context.Background()
+		if err := w.api.MarkViewed(ctx, id); err != nil {
 			logger.L().Error().Err(err).Str("id", id).Msg("mark viewed failed")
 			return c.Send("failed to mark viewed")
 		}
@@ -112,7 +117,8 @@ func (w *Wrapper) prepare() {
 
 	w.bot.Handle("/random", func(c tb.Context) error {
 		resource := strings.TrimSpace(c.Message().Payload)
-		link, err := w.api.RandomLink(resource)
+		ctx := context.Background()
+		link, err := w.api.RandomLink(ctx, resource)
 		if err != nil {
 			logger.L().Error().Err(err).Str("resource", resource).Msg("random link failed")
 			return c.Send("failed to get random link")
@@ -136,7 +142,8 @@ func (w *Wrapper) prepare() {
 	})
 
 	w.bot.Handle(&btnRandom, func(c tb.Context) error {
-		link, err := w.api.RandomLink("")
+		ctx := context.Background()
+		link, err := w.api.RandomLink(ctx, "")
 		if err != nil {
 			logger.L().Error().Err(err).Msg("random link failed")
 			return c.Send("failed to get random link", menu)
@@ -152,7 +159,8 @@ func (w *Wrapper) prepare() {
 	})
 
 	w.bot.Handle(&btnRandomArticle, func(c tb.Context) error {
-		link, err := w.api.RandomLink("article")
+		ctx := context.Background()
+		link, err := w.api.RandomLink(ctx, "article")
 		if err != nil {
 			logger.L().Error().Err(err).Msg("random article failed")
 			return c.Send("failed to get random article", menu)
@@ -165,7 +173,8 @@ func (w *Wrapper) prepare() {
 	})
 
 	w.bot.Handle(&btnRandomVideo, func(c tb.Context) error {
-		link, err := w.api.RandomLink("video")
+		ctx := context.Background()
+		link, err := w.api.RandomLink(ctx, "video")
 		if err != nil {
 			logger.L().Error().Err(err).Msg("random video failed")
 			return c.Send("failed to get random video", menu)

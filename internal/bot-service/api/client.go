@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -28,12 +29,12 @@ func NewClient(baseURL string, timeout time.Duration) *Client {
 	}
 }
 
-func (c *Client) CreateLink(url string) (string, error) {
+func (c *Client) CreateLink(ctx context.Context, url string) (string, error) {
 	payload, err := json.Marshal(map[string]string{"url": url})
 	if err != nil {
 		return "", err
 	}
-	req, err := http.NewRequest("POST", c.baseURL+"/api/v1/links", bytes.NewReader(payload))
+	req, err := http.NewRequestWithContext(ctx, "POST", c.baseURL+"/api/v1/links", bytes.NewReader(payload))
 	if err != nil {
 		return "", err
 	}
@@ -55,8 +56,8 @@ func (c *Client) CreateLink(url string) (string, error) {
 	return out.ID, nil
 }
 
-func (c *Client) MarkViewed(id string) error {
-	req, err := http.NewRequest("POST", c.baseURL+"/api/v1/links/"+id+"/viewed", nil)
+func (c *Client) MarkViewed(ctx context.Context, id string) error {
+	req, err := http.NewRequestWithContext(ctx, "POST", c.baseURL+"/api/v1/links/"+id+"/viewed", http.NoBody)
 	if err != nil {
 		return err
 	}
@@ -71,12 +72,12 @@ func (c *Client) MarkViewed(id string) error {
 	return nil
 }
 
-func (c *Client) RandomLink(resource string) (Link, error) {
+func (c *Client) RandomLink(ctx context.Context, resource string) (Link, error) {
 	requestURL := c.baseURL + "/api/v1/links/random"
 	if resource != "" {
 		requestURL += "?resource=" + url.QueryEscape(resource)
 	}
-	req, err := http.NewRequest("GET", requestURL, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", requestURL, http.NoBody)
 	if err != nil {
 		return Link{}, err
 	}

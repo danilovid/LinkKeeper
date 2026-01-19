@@ -1,0 +1,65 @@
+linters-settings:
+  govet:
+    enable:
+      - shadow
+  gocyclo:
+    min-complexity: 20
+  dupl:
+    threshold: 150
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  misspell:
+    locale: US
+  lll:
+    line-length: 140
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - performance
+    disabled-checks:
+      - hugeParam
+      - ifElseChain
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - errcheck
+    - gocyclo
+    - gofmt
+    - goimports
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - noctx
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unused
+    - whitespace
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
+        - gocyclo
+    - path: cmd/
+      linters:
+        - errcheck
+    - path: internal/.*/repository\.go
+      linters:
+        - dupl
+    - path: internal/.*/usecase\.go
+      linters:
+        - dupl
+
+run:
+  timeout: 5m
+  tests: false
+  skip-dirs:
+    - vendor
+    - frontend
