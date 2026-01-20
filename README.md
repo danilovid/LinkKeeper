@@ -386,6 +386,16 @@ MIT License — see [LICENSE](LICENSE) file
 - ✅ CI/CD — configured
 - ⚠️ Test coverage — 70% (target: 85%)
 
+## 🗺️ Roadmap
+
+See [ISSUES.md](ISSUES.md) for planned features and improvements, including:
+- 🤖 ChatGPT integration for link descriptions
+- 🔐 Frontend authentication system
+- 🔄 Session management
+- 🏷️ Tags and categories
+- 🔍 Advanced search and filtering
+- And more...
+
 ---
 
 **Made with ❤️ for convenient link management**
