@@ -1,31 +1,31 @@
-# Тестирование и архитектура в GitHub Actions
+# Testing and Architecture in GitHub Actions
 
-## Краткий ответ: НЕТ, отдельная сборка с указанием архитектуры НЕ нужна
+## Quick Answer: NO, a separate build with architecture specification is NOT needed
 
-### Почему не нужно?
+### Why not?
 
-1. **`go test` автоматически компилирует для текущей платформы**
-   - GitHub Actions runner (`ubuntu-latest`) работает на `linux/amd64`
-   - `go test` автоматически компилирует тесты для `linux/amd64`
-   - Тесты запускаются на той же архитектуре, что и runner
+1. **`go test` automatically compiles for the current platform**
+   - GitHub Actions runner (`ubuntu-latest`) runs on `linux/amd64`
+   - `go test` automatically compiles tests for `linux/amd64`
+   - Tests run on the same architecture as the runner
 
-2. **Текущая конфигурация правильная:**
+2. **Current configuration is correct:**
 ```yaml
 - name: Run tests
   run: |
     go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
 ```
 
-3. **Go автоматически определяет:**
-   - Операционную систему (Linux)
-   - Архитектуру (amd64)
-   - Компилирует и запускает соответственно
+3. **Go automatically detects:**
+   - Operating system (Linux)
+   - Architecture (amd64)
+   - Compiles and runs accordingly
 
-## Когда МОЖЕТ понадобиться указать архитектуру?
+## When MIGHT you need to specify architecture?
 
-### 1. Кросс-платформенное тестирование
+### 1. Cross-platform testing
 
-Если нужно тестировать на разных платформах:
+If you need to test on different platforms:
 
 ```yaml
 jobs:
@@ -43,7 +43,7 @@ jobs:
       - run: go test ./...
 ```
 
-### 2. Тестирование на разных архитектурах (ARM, x86)
+### 2. Testing on different architectures (ARM, x86)
 
 ```yaml
 jobs:
@@ -61,9 +61,9 @@ jobs:
           GOARCH=${{ matrix.arch }} go test ./...
 ```
 
-### 3. Сборка бинарников для разных платформ
+### 3. Building binaries for different platforms
 
-Для сборки (не тестов) может понадобиться:
+For building (not testing) you might need:
 
 ```yaml
 - name: Build for multiple platforms
@@ -73,7 +73,7 @@ jobs:
     GOOS=windows GOARCH=amd64 go build -o bin/api-service-windows-amd64.exe ./cmd/api-service
 ```
 
-## Текущая конфигурация (оптимальная для большинства случаев)
+## Current configuration (optimal for most cases)
 
 ```yaml
 - name: Set up Go
@@ -87,63 +87,63 @@ jobs:
     go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
 ```
 
-**Это работает потому что:**
+**This works because:**
 - ✅ `ubuntu-latest` = Linux amd64
-- ✅ `go test` автоматически компилирует для Linux amd64
-- ✅ Тесты запускаются нативно (быстро)
-- ✅ Race detector работает корректно
-- ✅ Coverage собирается правильно
+- ✅ `go test` automatically compiles for Linux amd64
+- ✅ Tests run natively (fast)
+- ✅ Race detector works correctly
+- ✅ Coverage is collected properly
 
-## Сравнение подходов
+## Approach comparison
 
-### Текущий подход (рекомендуется)
+### Current approach (recommended)
 ```yaml
 go test ./...
 ```
-- ✅ Просто и быстро
-- ✅ Автоматическая компиляция для текущей платформы
-- ✅ Нативная производительность
-- ✅ Подходит для 99% проектов
+- ✅ Simple and fast
+- ✅ Automatic compilation for current platform
+- ✅ Native performance
+- ✅ Suitable for 99% of projects
 
-### Явное указание архитектуры (избыточно)
+### Explicit architecture specification (redundant)
 ```yaml
 GOOS=linux GOARCH=amd64 go test ./...
 ```
-- ⚠️ Избыточно (то же самое, что и без указания)
-- ⚠️ Может быть медленнее (если нужна кросс-компиляция)
-- ✅ Нужно только для кросс-платформенного тестирования
+- ⚠️ Redundant (same as without specification)
+- ⚠️ May be slower (if cross-compilation is needed)
+- ✅ Only needed for cross-platform testing
 
-## Когда добавить multi-arch тестирование?
+## When to add multi-arch testing?
 
-Добавьте только если:
-1. ✅ Проект должен работать на разных платформах (Windows, macOS, Linux)
-2. ✅ Есть платформо-специфичный код (syscalls, файловые пути)
-3. ✅ Нужно тестировать на ARM (например, для Docker на ARM)
-4. ✅ Требования проекта/компании
+Add only if:
+1. ✅ Project must work on different platforms (Windows, macOS, Linux)
+2. ✅ There is platform-specific code (syscalls, file paths)
+3. ✅ Need to test on ARM (e.g., for Docker on ARM)
+4. ✅ Project/company requirements
 
-## Рекомендации
+## Recommendations
 
-### Для вашего проекта (LinkKeeper)
+### For your project (LinkKeeper)
 
-**Текущая конфигурация идеальна:**
-- ✅ Тесты запускаются на Linux amd64 (стандарт для серверов)
-- ✅ Быстро и эффективно
-- ✅ Покрывает основную целевую платформу
-- ✅ Race detector работает корректно
+**Current configuration is ideal:**
+- ✅ Tests run on Linux amd64 (standard for servers)
+- ✅ Fast and efficient
+- ✅ Covers the main target platform
+- ✅ Race detector works correctly
 
-**Не нужно добавлять:**
-- ❌ Явное указание GOOS/GOARCH (избыточно)
-- ❌ Multi-arch тестирование (если не требуется)
-- ❌ Дополнительные сборки (только для тестов)
+**Don't need to add:**
+- ❌ Explicit GOOS/GOARCH specification (redundant)
+- ❌ Multi-arch testing (if not required)
+- ❌ Additional builds (only for tests)
 
-### Если понадобится расширить
+### If you need to expand
 
-Добавьте matrix strategy только если:
-- Нужно тестировать на Windows/macOS
-- Нужна поддержка ARM
-- Есть платформо-специфичный код
+Add matrix strategy only if:
+- Need to test on Windows/macOS
+- Need ARM support
+- There is platform-specific code
 
-## Пример расширенной конфигурации (если понадобится)
+## Extended configuration example (if needed)
 
 ```yaml
 jobs:
@@ -161,7 +161,7 @@ jobs:
     services:
       postgres:
         image: postgres:16
-        # ... (только для Linux)
+        # ... (only for Linux)
         if: matrix.os == 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v4
@@ -170,18 +170,18 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Run tests
         run: go test -v -race ./...
-        # PostgreSQL только на Linux
+        # PostgreSQL only on Linux
         if: matrix.os == 'ubuntu-latest'
 ```
 
-## Вывод
+## Conclusion
 
-**Для вашего проекта:**
-- ✅ Текущая конфигурация правильная
-- ✅ Не нужно указывать архитектуру явно
-- ✅ `go test` автоматически работает корректно
-- ✅ Все тесты запускаются нативно на Linux amd64
+**For your project:**
+- ✅ Current configuration is correct
+- ✅ No need to specify architecture explicitly
+- ✅ `go test` automatically works correctly
+- ✅ All tests run natively on Linux amd64
 
-**Добавляйте multi-arch только если:**
-- Требуется поддержка других платформ
-- Есть специфичные требования проекта
+**Add multi-arch only if:**
+- Support for other platforms is required
+- There are specific project requirements

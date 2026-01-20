@@ -1,100 +1,100 @@
 # LinkKeeper Frontend
 
-React Native приложение для управления ссылками с поддержкой веб-просмотра.
+React Native application for link management with web viewing support.
 
-## Требования
+## Requirements
 
 - Node.js 18+ 
-- npm или yarn
-- Expo CLI (установится автоматически)
+- npm or yarn
+- Expo CLI (will be installed automatically)
 
-## Установка
+## Installation
 
 ```bash
 cd frontend
 npm install
 ```
 
-## Запуск
+## Running
 
-### Веб-режим (для разработки)
+### Web mode (for development)
 ```bash
 npm run dev
 ```
 
-Или:
+Or:
 ```bash
 npm run web
 ```
 
-Приложение откроется в браузере на `http://localhost:19006`
+The application will open in the browser at `http://localhost:19006`
 
-**Важно:** Убедитесь, что ваш API сервер запущен на `http://localhost:8080` (или измените URL в конфигурации)
+**Important:** Make sure your API server is running on `http://localhost:8080` (or change the URL in configuration)
 
-### Мобильные платформы
+### Mobile platforms
 ```bash
 npm start
 ```
 
-Затем выберите платформу (iOS/Android/Web) или отсканируйте QR-код в Expo Go приложении.
+Then select the platform (iOS/Android/Web) or scan the QR code in the Expo Go app.
 
-## Интерфейс
+## Interface
 
-**Текущий интерфейс:** Современный дизайн в стиле Cursor/GitHub
-- 🌙 Темная тема
-- 🎨 Минималистичный и чистый дизайн
-- 🔍 Поиск и фильтрация
-- 📊 Статистика в header
-- ✨ Профессиональный вид
+**Current interface:** Modern design in Cursor/GitHub style
+- 🌙 Dark theme
+- 🎨 Minimalist and clean design
+- 🔍 Search and filtering
+- 📊 Statistics in header
+- ✨ Professional look
 
-Проект также содержит 3 дополнительных варианта интерфейса. Подробности в файле [VARIANTS.md](./VARIANTS.md).
+The project also contains 3 additional interface variants. Details in [VARIANTS.md](./VARIANTS.md).
 
-**Дополнительные варианты:**
-1. **Классический список** - простой вертикальный список
-2. **Карточки в сетке** - визуальные карточки с фильтрацией
-3. **Дашборд со статистикой** - аналитика и быстрые действия
+**Additional variants:**
+1. **Classic List** - simple vertical list
+2. **Card Grid** - visual cards with filtering
+3. **Dashboard with Statistics** - analytics and quick actions
 
-Чтобы выбрать другой вариант, откройте `App.tsx` и замените импорт `ModernScreen` на нужный вариант.
+To select another variant, open `App.tsx` and replace the `ModernScreen` import with the desired variant.
 
-## Конфигурация
+## Configuration
 
-По умолчанию API URL: `http://localhost:8080/api/v1`
+Default API URL: `http://localhost:8080/api/v1`
 
-Для изменения создайте файл `.env` в папке `frontend`:
+To change it, create a `.env` file in the `frontend` folder:
 ```
 EXPO_PUBLIC_API_URL=http://your-api-url/api/v1
 ```
 
-## Структура проекта
+## Project Structure
 
 ```
 frontend/
 ├── src/
 │   ├── api/
-│   │   └── client.ts      # API клиент для работы с backend
+│   │   └── client.ts      # API client for backend interaction
 │   ├── screens/
-│   │   ├── HomeScreen.tsx           # Базовый экран (текущий)
-│   │   ├── Variant1_ClassicList.tsx # Вариант 1: Классический список
-│   │   ├── Variant2_CardGrid.tsx   # Вариант 2: Карточки в сетке
-│   │   └── Variant3_Dashboard.tsx   # Вариант 3: Дашборд
-│   ├── types.ts          # TypeScript типы
-│   └── config.ts          # Конфигурация
-├── App.tsx                # Главный компонент
+│   │   ├── HomeScreen.tsx           # Base screen (current)
+│   │   ├── Variant1_ClassicList.tsx # Variant 1: Classic list
+│   │   ├── Variant2_CardGrid.tsx   # Variant 2: Card grid
+│   │   └── Variant3_Dashboard.tsx   # Variant 3: Dashboard
+│   ├── types.ts          # TypeScript types
+│   └── config.ts          # Configuration
+├── App.tsx                # Main component
 ├── package.json
-└── VARIANTS.md            # Описание вариантов UI
+└── VARIANTS.md            # UI variants description
 ```
 
-## Функциональность
+## Functionality
 
-- ✅ Создание ссылок с опциональным ресурсом
-- ✅ Просмотр списка всех ссылок
-- ✅ Получение случайной ссылки (с фильтром по ресурсу)
-- ✅ Отметка ссылки как просмотренной
-- ✅ Удаление ссылок
-- ✅ Отображение статистики (просмотры, даты)
+- ✅ Create links with optional resource
+- ✅ View list of all links
+- ✅ Get random link (with resource filter)
+- ✅ Mark link as viewed
+- ✅ Delete links
+- ✅ Display statistics (views, dates)
 
-## Разработка
+## Development
 
-При изменении кода приложение автоматически перезагрузится в браузере (Hot Reload).
+When code changes, the application will automatically reload in the browser (Hot Reload).
 
-Для остановки нажмите `Ctrl+C` в терминале.
+To stop, press `Ctrl+C` in the terminal.

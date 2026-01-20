@@ -12,13 +12,13 @@ import { apiClient } from '../api/client';
 import { Link } from '../types';
 
 /**
- * ВАРИАНТ 3: Дашборд со статистикой
+ * VARIANT 3: Dashboard with statistics
  * 
- * Особенности:
- * - Статистика по ссылкам (всего, просмотрено, по ресурсам)
- * - Быстрый доступ к случайным ссылкам
- * - Компактный список с поиском
- * - Акцент на аналитике
+ * Features:
+ * - Link statistics (total, viewed, by resources)
+ * - Quick access to random links
+ * - Compact list with search
+ * - Focus on analytics
  */
 export default function Variant3_Dashboard() {
   const [links, setLinks] = useState<Link[]>([]);

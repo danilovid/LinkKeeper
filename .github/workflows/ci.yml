@@ -36,16 +36,21 @@ jobs:
           go-version: '1.23'
           cache: true
 
+      - name: Install Task
+        run: |
+          sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
       - name: Install dependencies
         run: |
           go mod download
           go mod tidy
 
-      - name: Run go fmt
+      - name: Run go fmt check
         run: |
           unformatted=$(gofmt -s -l $(find . -name '*.go' -not -path './vendor/*' -not -path './.git/*' 2>/dev/null))
           if [ -n "$unformatted" ]; then
-            echo "Please run 'go fmt ./...'"
+            echo "Please run 'task fmt' to format code"
             echo "$unformatted"
             exit 1
           fi
@@ -56,8 +61,7 @@ jobs:
       - name: Run tests
         env:
           POSTGRES_DSN: "postgres://postgres:postgres@localhost:5432/linkkeeper_test?sslmode=disable"
-        run: |
-          go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+        run: task test:coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -80,6 +84,11 @@ jobs:
         with:
           go-version: '1.23'
 
+      - name: Install Task
+        run: |
+          sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v4
         with:
@@ -101,14 +110,16 @@ jobs:
           go-version: '1.23'
           cache: true
 
-      - name: Build api-service
-        run: go build -v -o bin/api-service ./cmd/api-service
+      - name: Install Task
+        run: |
+          sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Build user-service
-        run: go build -v -o bin/user-service ./cmd/user-service
-
-      - name: Build bot-service
-        run: go build -v -o bin/bot-service ./cmd/bot-service
+      - name: Build all services
+        run: |
+          task api:build
+          task user:build
+          task bot:build
 
   docker:
     name: Docker Build

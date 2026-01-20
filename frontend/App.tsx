@@ -31,7 +31,7 @@ export default function App() {
             component={ModernScreen}
             options={{ 
               title: 'LinkKeeper',
-              headerShown: false, // Скрываем стандартный header, используем кастомный
+              headerShown: false, // Hide standard header, use custom one
             }}
           />
         </Stack.Navigator>

@@ -1,28 +1,28 @@
-# Исправление проверки gofmt в CI
+# Fixing gofmt Check in CI
 
-## Проблема
+## Problem
 
-CI падал с ошибкой:
+CI was failing with error:
 ```
 Please run 'go fmt ./...'
 vendor/github.com/davecgh/go-spew/spew/bypass.go
 vendor/github.com/google/uuid/uuid.go
-... (много файлов из vendor/)
+... (many files from vendor/)
 Error: Process completed with exit code 1.
 ```
 
-## Причина
+## Cause
 
-Проверка `gofmt` проверяла все файлы, включая директорию `vendor/`, которая содержит внешние зависимости. Эти файлы не должны проверяться, так как:
-1. Они не являются частью нашего кода
-2. Они могут быть отформатированы по-другому
-3. Мы не контролируем их форматирование
+The `gofmt` check was checking all files, including the `vendor/` directory, which contains external dependencies. These files should not be checked because:
+1. They are not part of our code
+2. They may be formatted differently
+3. We don't control their formatting
 
-## Решение
+## Solution
 
-Исключили директорию `vendor/` из проверки форматирования.
+Excluded the `vendor/` directory from formatting check.
 
-### Было:
+### Before:
 ```yaml
 - name: Run go fmt
   run: |
@@ -33,7 +33,7 @@ Error: Process completed with exit code 1.
     fi
 ```
 
-### Стало:
+### After:
 ```yaml
 - name: Run go fmt
   run: |
@@ -45,17 +45,17 @@ Error: Process completed with exit code 1.
     fi
 ```
 
-## Что изменилось
+## What changed
 
-1. ✅ Используется `find` для поиска `.go` файлов
-2. ✅ Исключается `vendor/` директория
-3. ✅ Исключается `.git/` директория
-4. ✅ Проверяются только файлы проекта
+1. ✅ Uses `find` to search for `.go` files
+2. ✅ Excludes `vendor/` directory
+3. ✅ Excludes `.git/` directory
+4. ✅ Checks only project files
 
-## Проверка
+## Verification
 
 ```bash
-# Локальная проверка (исключая vendor)
+# Local check (excluding vendor)
 unformatted=$(gofmt -s -l $(find . -name '*.go' -not -path './vendor/*' -not -path './.git/*' 2>/dev/null))
 if [ -n "$unformatted" ]; then
   echo "Unformatted files found"
@@ -65,9 +65,9 @@ else
 fi
 ```
 
-## Альтернативные подходы
+## Alternative approaches
 
-### Вариант 1: Использовать go fmt напрямую
+### Option 1: Use go fmt directly
 ```yaml
 - name: Run go fmt
   run: |
@@ -79,7 +79,7 @@ fi
     fi
 ```
 
-### Вариант 2: Использовать gofmt с явным списком директорий
+### Option 2: Use gofmt with explicit directory list
 ```yaml
 - name: Run go fmt
   run: |
@@ -90,20 +90,20 @@ fi
     done
 ```
 
-## Рекомендация
+## Recommendation
 
-Текущее решение оптимально:
-- ✅ Проверяет только файлы проекта
-- ✅ Игнорирует vendor и .git
-- ✅ Показывает список неотформатированных файлов
-- ✅ Работает быстро
+Current solution is optimal:
+- ✅ Checks only project files
+- ✅ Ignores vendor and .git
+- ✅ Shows list of unformatted files
+- ✅ Works fast
 
-## Файлы изменены
+## Files changed
 
-- `.github/workflows/ci.yml` - Обновлена проверка gofmt
+- `.github/workflows/ci.yml` - Updated gofmt check
 
-## Результат
+## Result
 
-- ✅ CI больше не падает на файлах из vendor/
-- ✅ Проверяются только файлы проекта
-- ✅ Более быстрая проверка (меньше файлов)
+- ✅ CI no longer fails on files from vendor/
+- ✅ Only project files are checked
+- ✅ Faster check (fewer files)

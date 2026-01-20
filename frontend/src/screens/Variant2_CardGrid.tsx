@@ -14,13 +14,13 @@ import { apiClient } from '../api/client';
 import { Link } from '../types';
 
 /**
- * ВАРИАНТ 2: Карточки в сетке
+ * VARIANT 2: Card grid
  * 
- * Особенности:
- * - Ссылки отображаются в виде карточек
- * - Модальное окно для добавления
- * - Фильтрация по ресурсам
- * - Более визуально привлекательный дизайн
+ * Features:
+ * - Links displayed as cards
+ * - Modal window for adding
+ * - Resource filtering
+ * - More visually appealing design
  */
 export default function Variant2_CardGrid() {
   const [links, setLinks] = useState<Link[]>([]);

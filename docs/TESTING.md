@@ -58,20 +58,20 @@ go test -v -coverprofile=coverage.out ./...
 go tool cover -html=coverage.out
 ```
 
-### Using Makefile
+### Using Taskfile
 
 ```bash
 # Run tests
-make test
+task test
 
 # Run tests with coverage
-make test-coverage
+task test:coverage
 
 # Run linters
-make lint
+task lint
 
 # Format code
-make fmt
+task fmt
 ```
 
 ## Test Dependencies
@@ -187,8 +187,6 @@ Install pre-commit hooks to run checks before each commit:
 
 ```bash
 task hooks:install
-# or
-make install-hooks
 ```
 
 The hooks will:

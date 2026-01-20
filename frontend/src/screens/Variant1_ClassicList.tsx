@@ -13,13 +13,13 @@ import { apiClient } from '../api/client';
 import { Link } from '../types';
 
 /**
- * ВАРИАНТ 1: Классический список
+ * VARIANT 1: Classic list
  * 
- * Особенности:
- * - Вертикальный список всех ссылок
- * - Форма добавления сверху
- * - Простой и понятный интерфейс
- * - Все функции на одном экране
+ * Features:
+ * - Vertical list of all links
+ * - Add form at the top
+ * - Simple and clear interface
+ * - All functions on one screen
  */
 export default function Variant1_ClassicList() {
   const [links, setLinks] = useState<Link[]>([]);
